@@ -72,4 +72,17 @@ let setup_log =
 let source_file =
   let doc = "Source file to analyze." in
   Arg.(
+    (* pos 0 sert à récuperer le premier argument après la commande et il est obligatoire *)
     required & pos 0 (some existing_file_conv) None (info [] ~doc ~docv:"FILE"))
+
+(* Seed argument *)
+let seed =
+  let doc = "Seed for random number generator." in
+  (* le opt + info["seed"] permet d'écrire --seed pour le parser *)
+  (* some int pour dire qu'on attends un argument entier genre seed 42 *)
+  (* None est la valeur par défaut s'il ne passe rien cela nous permettra d'appeler self_init quand c none*)
+  (* value rend l'argument optionnel *)
+  (* le doc c pour ajouter la docu au help et donner la valeur que prend le seed *)
+  Arg.(value & opt (some int) None & (info ["seed"] ~doc ~docv:"INT"))
+
+  (* Définition de l'option seed pour la CLI *)
