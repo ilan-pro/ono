@@ -83,6 +83,6 @@ let seed =
   (* None est la valeur par défaut s'il ne passe rien cela nous permettra d'appeler self_init quand c none*)
   (* value rend l'argument optionnel *)
   (* le doc c pour ajouter la docu au help et donner la valeur que prend le seed *)
-  Arg.(value & opt (some int) None & (info ["seed"] ~doc ~docv:"INT"))
+  Arg.(value & opt (some int) None & info [ "seed" ] ~doc ~docv:"INT")
 
-  (* Définition de l'option seed pour la CLI *)
+(* Définition de l'option seed pour la CLI *)
