@@ -69,8 +69,6 @@
         i32.add
         i32.const 4 ;; chaque i32 prends 4 octets mais il faut soustraire pour revenir au début de [i][j] donc -4
         i32.mul
-        i32.const 4 ;; TODO : vérifier quand on manipule vraiment si c la bonne façon 
-        i32.sub 
         i32.load ;; memory [i][j]
     )
 
@@ -78,8 +76,6 @@
         local.get $posi
         i32.const 4
         i32.mul ;; il faut multiplier par 4 car un i32 c'est 4 octets
-        i32.const 4 ;; TODO : vérifier quand on manipule vraiment si c la bonne façon 
-        i32.sub ;; on est au dernier octet de notre i32 ici donc on doit enlever 4 octets pour lire au début
         i32.load ;; memory[posi]
     )
 
