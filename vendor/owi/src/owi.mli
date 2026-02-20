@@ -120,8 +120,6 @@ module Concrete_i32 : sig
 
   val of_int : Int.t -> t
 
-  val to_int : t -> Int.t
-
   val of_int32 : Int32.t -> t
 
   val add : t -> t -> t
@@ -158,8 +156,6 @@ module Concrete_f32 : sig
 
   val of_float : float -> t
 
-  val to_float : t -> float
-
   val pp : t Fmt.t
 end
 
@@ -167,8 +163,6 @@ module Concrete_f64 : sig
   type t
 
   val of_float : float -> t
-
-  val to_float : t -> float
 
   val pp : t Fmt.t
 end
@@ -1228,6 +1222,7 @@ module Cmd_run : sig
        unsafe:bool
     -> timeout:float option
     -> timeout_instr:int option
+    -> seed:int option
     -> source_file:Fpath.t
     -> unit Result.t
 end

@@ -1,10 +1,10 @@
-(* SPDX-License-Identifier: AGPL-3.0-or-later *)
-(* Copyright © 2021-2024 OCamlPro *)
-(* Written by the Owi programmers *)
-
 open Syntax
 
-let cmd ~unsafe ~timeout ~timeout_instr ~source_file =
+let cmd ~unsafe ~timeout ~timeout_instr ~seed ~source_file =
+  (match seed with
+   | Some s -> Random.init s
+   | None -> Random.self_init ());
+  
   let name = None in
   let link_state = Link.State.empty () in
   let* m, link_state =
@@ -12,11 +12,8 @@ let cmd ~unsafe ~timeout ~timeout_instr ~source_file =
   in
   let module Parameters = struct
     let timeout = timeout
-
     let timeout_instr = timeout_instr
-
     let use_ite_for_select = true
-
     let throw_away_trap = false
   end in
   let module I = Interpret.Concrete (Parameters) in

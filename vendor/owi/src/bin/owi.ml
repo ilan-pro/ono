@@ -189,6 +189,10 @@ let source_file =
   Arg.(
     required & pos 0 (some existing_file_conv) None (info [] ~doc ~docv:"FILE") )
 
+let seed =
+  let doc = "Seed for random number generation." in
+  Arg.(value & opt (some int) None & info [ "seed" ] ~doc)
+
 let setup_log =
   let+ bench
   and+ log_level
@@ -411,9 +415,10 @@ let run_cmd =
   let+ unsafe
   and+ timeout
   and+ timeout_instr
+  and+ seed
   and+ () = setup_log
   and+ source_file in
-  Cmd_run.cmd ~unsafe ~timeout ~timeout_instr ~source_file
+  Cmd_run.cmd ~unsafe ~timeout ~timeout_instr ~seed ~source_file
 
 (* owi script *)
 

@@ -267,7 +267,11 @@ let select_i32 (i : Symbolic_i32.t) =
       (* TODO: everything which follows look like select_inner and could probably be simplified by calling it directly! *)
       let this_value_cond =
         let open Smtml.Expr in
-        Bitv.I32.(s = v i) |> Symbolic_boolean.of_expr
+        let open Smtml.Ty in
+        let open Smtml.Bitvector in
+        let vi = value (Bitv (of_int32 i)) in
+        let eq_expr = relop Ty_bool (Relop.Eq) s vi in
+        Symbolic_boolean.of_expr eq_expr
       in
       let not_this_value_cond = Symbolic_boolean.not this_value_cond in
       let this_val_branch =

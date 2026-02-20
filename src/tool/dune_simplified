@@ -1,0 +1,18 @@
+(executable
+ (package ono)
+ (public_name ono_concrete)
+ (name ono_simple_main)
+ (modules ono_simple_main)
+ (libraries
+  bos
+  cmdliner
+  fmt
+  fmt.cli
+  fmt.tty
+  fpath
+  logs
+  logs.cli
+  logs.fmt
+  ono)
+ (instrumentation
+  (backend bisect_ppx)))

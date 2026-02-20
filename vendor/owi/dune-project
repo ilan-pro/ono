@@ -1,41 +1,31 @@
 (lang dune 3.7)
 
-(using menhir 2.1)
-
-(using dune_site 0.1)
+(generate_opam_files true)
 
 (using directory-targets 0.1)
 
-(generate_opam_files true)
+(using dune_site 0.1)
+
+(using menhir 2.1)
 
 (name owi)
 
 (license AGPL-3.0-or-later)
 
-(authors
- "redianthus <leo@ocaml.pro>"
- "Pierre Chambart <pierre.chambart@ocamlpro.com>"
- "Filipe Marques <filipe.s.marques@tecnico.ulisboa.pt>"
- "Eric Patrizio <epatrizio@mpns.fr>"
- "Arthur Carcano <arthur.carcano@ocamlpro.com>")
+(authors "TODO")
 
-(maintainers "redianthus <leo@ocaml.pro>")
+(maintainers "TODO")
 
-(source
- (github ocamlpro/owi))
+(homepage "TODO")
+
+(bug_reports "TODO")
 
 (package
  (name owi)
- (synopsis
-  "Symbolic execution engine and WebAssembly toolkit for research and engineering")
- (description
-  "Owi is an open-source framework for symbolic execution and WebAssembly analysis.\nIt supports the analysis of programs written in WebAssembly, C, C++, Rust, and Zig.\nOwi provides symbolic execution for bug finding, solver-aided programming, test case generation, and program verification.\n\nThe framework includes tools for formatting, optimizing, interpreting, validating, and translating WebAssembly modules.\nIt also provides a generator for random valid WebAssembly modules.\n\nAn OCaml library is available to embed WebAssembly modules and import OCaml functions in a type-safe manner.")
- (tags
-  (owi ocaml webassembly wasm interpreter compiler))
+ (synopsis "TODO")
  (depends
-  ;; build
   (ocaml
-   (>= 5.2))
+   (>= 5.3))
   (menhir
    (and
     :build
@@ -61,7 +51,7 @@
   (sedlex
    (>= 3.3))
   (smtml
-   (>= 0.17.0))
+   (= 0.19.0))
   (synchronizer
    (>= 0.2))
   (uutf

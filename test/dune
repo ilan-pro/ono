@@ -1,0 +1,4 @@
+(cram
+ (deps
+  (package ono)
+  (glob_files ../examples/*/*.wat)))
