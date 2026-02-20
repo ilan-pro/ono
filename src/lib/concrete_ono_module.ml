@@ -11,18 +11,18 @@ let print_i64 (n : Kdo.Concrete.I64.t) : (unit, _) Result.t =
 let random_i32 (n : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
   Ok (Kdo.Concrete.I32.of_int (Random.int (Kdo.Concrete.I32.to_int n)))
 
-(* let buffer =Buffer.create(4095)   *)
+let buffer = Buffer.create(4095)  
 
 let newline () : (unit,_) Result.t =
-  Buffer.add_string buffer "\n"
+  Buffer.add_string buffer "\n";
   Ok()
 
-let clear_screen () : (unit,_) Result =
-  Buffer.clear buffer
+let clear_screen () : (unit,_) Result.t =
+  Buffer.clear buffer;
   Ok()
 
-let sleep(x: Kdo.Concrete.I32.t) : (unit,_) Result =
-  Unix.sleep(x)
+let sleep(x: Kdo.Concrete.I32.t) : (unit,_) Result.t =
+  Unix.sleep(Kdo.Concrete.I32.to_int x);
   Ok()
 
 let m =
@@ -33,9 +33,9 @@ let m =
       ("print_i32", Extern_func (i32 ^->. unit, print_i32));
       ("print_i64", Extern_func (i64 ^->. unit, print_i64));
       ("random_i32", Extern_func (i32 ^->. i32, random_i32));
-      ("newline",Extern_func(unit ^->. unit), newline);
-      ("clear_screen",Extern_func(unit ^-> unit),clear_screen);
-      ("sleep",Extern_func(i32 ^-> unit),sleep);
+      ("newline", Extern_func(unit ^->. unit, newline));
+      ("clear_screen",Extern_func(unit ^->. unit,clear_screen));
+      ("sleep",Extern_func(i32 ^->. unit, sleep));
     ]
   in
   {
