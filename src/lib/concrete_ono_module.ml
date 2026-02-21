@@ -19,7 +19,7 @@ let newline () : (unit, _) Result.t =
 
 let clear_screen () : (unit, _) Result.t =
   let contenu = Buffer.contents buffer in
-  Format.printf "\027[2J";
+  (*Format.printf "\027[2J";*)
   Format.print_string contenu;
   Buffer.clear buffer;
   Ok ()

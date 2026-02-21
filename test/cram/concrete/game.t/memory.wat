@@ -4,20 +4,25 @@
     (func $newline (import "ono" "newline"))
     (func $cell_print (import "ono" "cell_print") (param i32))
     (func $print_i32 (import "ono" "print_i32") (param i32))
+    (func $random_i32 (import "ono" "random_i32") (param i32) (result i32))
 
-    (global $largeur i32 (i32.const 6))
-    (global $longueur i32 (i32.const 9))
+
+    (global $largeur i32 (i32.const 20))
+    (global $longueur i32 (i32.const 20))
     (memory 10) ;; taille arbitrairement grande (10 pages ~ 650 000 octets et un i32 c'est 4*8 bits donc on est large)
 
     (func $init
         (local $size i32) 
         (local $ptr i32)
+        (local $rand i32)
 
         global.get $largeur 
         global.get $longueur 
         i32.mul
         (local.set $size)
         (local.set $ptr (i32.const 0))
+        
+       
 
         (block $remplissage ;; on la remplit (TODO mette les valeurs aléatoire via random_I32)
             (loop $loop
@@ -30,10 +35,22 @@
                 local.set $size
 
                 ;; memory[i] = 0
-                local.get $ptr
                 
-                i32.const 1
-                i32.store 
+                i32.const 100
+                call $random_i32
+                i32.const 98
+                i32.gt_u
+
+                (if (then
+                    local.get $ptr
+                    i32.const 1
+                    i32.store )
+                (else
+                    local.get $ptr
+                    i32.const 0
+                    i32.store
+                    )
+                )
 
                 ;; i++
                 local.get $ptr
@@ -342,7 +359,7 @@
         
         call $init  
         
-        i32.const 5
+        i32.const 2
         local.set $i
 
         (block $stop
@@ -352,6 +369,7 @@
                 br_if $stop 
 
                 call $print_grid
+                (call $newline)
 
                 (i32.sub (local.get $i) (i32.const 1))
                 local.set $i
