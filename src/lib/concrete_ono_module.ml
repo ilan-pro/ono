@@ -18,6 +18,9 @@ let newline () : (unit, _) Result.t =
   Ok ()
 
 let clear_screen () : (unit, _) Result.t =
+  let contenu = Buffer.contents buffer in
+  Format.printf "\027[2J";
+  Format.print_string contenu;
   Buffer.clear buffer;
   Ok ()
 
@@ -27,7 +30,7 @@ let sleep (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
 
 let cell_print (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   if x <> Kdo.Concrete.I32.of_int 0 then Buffer.add_string buffer "🦊"
-  else Buffer.add_string buffer "OUUUUUU ";
+  else Buffer.add_string buffer " ";
   Ok ()
 
 let m =
