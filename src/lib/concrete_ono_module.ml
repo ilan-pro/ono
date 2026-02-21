@@ -25,6 +25,17 @@ let sleep(x: Kdo.Concrete.I32.t) : (unit,_) Result.t =
   Unix.sleep(Kdo.Concrete.I32.to_int x);
   Ok()
 
+let cell_print (x: Kdo.Concrete.I32.t) : (unit, _) Result.t =
+  if x <> (Kdo.Concrete.I32.of_int 0) then
+    Buffer.add_string buffer "🦊"
+  else
+    Buffer.add_string buffer " ";
+  Ok()
+
+  
+
+  
+
 let m =
   let open Kdo.Concrete.Extern_func in
   let open Kdo.Concrete.Extern_func.Syntax in
@@ -36,6 +47,8 @@ let m =
       ("newline", Extern_func(unit ^->. unit, newline));
       ("clear_screen",Extern_func(unit ^->. unit,clear_screen));
       ("sleep",Extern_func(i32 ^->. unit, sleep));
+      ("cell_print", Extern_func (i32 ^->. unit, cell_print));
+
     ]
   in
   {
