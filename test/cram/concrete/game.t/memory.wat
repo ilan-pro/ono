@@ -1,4 +1,9 @@
 (module
+
+    (func $clear_screen (import "ono" "clear_screen"))
+    (func $newline (import "ono" "newline"))
+    (func $cell_print (import "ono" "cell_print") (param i32))
+
     (global $largeur i32 (i32.const 6))
     (global $longueur i32 (i32.const 9))
     (memory 10) ;; taille arbitrairement grande (10 pages ~ 650 000 octets et un i32 c'est 4*8 bits donc on est large)
@@ -24,7 +29,7 @@
 
                 ;; memory[i] = 0
                 local.get $ptr
-                i32.const 0
+                i32.const 1
                 i32.store 
 
                 ;; i++
@@ -127,6 +132,7 @@
                 (i32.eq (local.get $n) (i32.add (local.get $j) (i32.const 2))) 
                 br_if $i_1 
 
+                ;; ne pas faire de boucle pour i 
                 local.get $n
                 local.get $i
                 call $get_2d 
@@ -164,54 +170,179 @@
         local.get $nb_neighboors
     )
 
-  (func $print_cell (import "ono" "print_cell") (param i32))
-  (func $print_grille
-    (local $i i32)
-    (local $j i32)
+    (func $print_grid (local $i i32) (local $j i32)
 
-    (call $clear_screen)
+        (call $clear_screen)
 
-    (local.set $i (i32.const 0))
+        (local.set $i (i32.const 0))
 
-    (block $stop_i
-        (loop $loop_i
-      
-        (i32.eq (local.get $i) (global.get $longueur))
-        (br_if $stop_i)
-
-        (local.set $j (i32.const 0))
-
-        (block $stop_j
-            (loop $loop_j
+        (block $stop_i
+            (loop $loop_i
         
-            (i32.eq (local.get $j) (global.get $largeur))
-            (br_if $stop_j)
+            (i32.eq (local.get $i) (global.get $longueur))
+            (br_if $stop_i)
 
-            (call $print_cell
-                (call $get_2d
-                (local.get $i)
-                (local.get $j)
+            (local.set $j (i32.const 0))
+
+            (block $stop_j
+                (loop $loop_j
+            
+                (i32.eq (local.get $j) (global.get $largeur))
+                (br_if $stop_j)
+
+                (call $cell_print
+                    (call $get_2d
+                    (local.get $i)
+                    (local.get $j)
+                    )
+                )
+
+                (local.set $j
+                    (i32.add (local.get $j) (i32.const 1))
+                )
+
+                (br $loop_j)
                 )
             )
 
-            (local.set $j
-                (i32.add (local.get $j) (i32.const 1))
+            (call $newline)
+
+            (local.set $i
+                (i32.add (local.get $i) (i32.const 1))
             )
 
-            (br $loop_j)
+            (br $loop_i)
             )
         )
+    )
 
-        (call $newline)
 
-        (local.set $i
-            (i32.add (local.get $i) (i32.const 1))
-        )
+    ;; (func $step (export "step")
+    ;;     (local $i i32)
+    ;;     (local $j i32)
+    ;;     (local $count i32)
+    ;;     (local $cell_alive i32)
+    ;;     (local $live i32)
+    ;;     (local $r i32)
 
-        (br $loop_i)
-        )
+    ;;     i32.const 0
+    ;;     local.set $i
+    ;;     loop $loop_i_neigh
+    ;;     i32.const 0
+    ;;     local.set $j
+    ;;     loop $loop_j_neigh
+    ;;         local.get $i
+    ;;         local.get $j
+    ;;         call $count_neighboors
+    ;;         local.set $count
 
-    (start $init)
+    ;;         global.get $neigh_base
+    ;;         local.get $i
+    ;;         local.get $j
+    ;;         call $idx
+    ;;         i32.add
+    ;;         local.get $count
+    ;;         i32.store8
+
+    ;;         local.get $j
+    ;;         i32.const 1
+    ;;         i32.add
+    ;;         local.tee $j
+    ;;         global.get $w
+    ;;         i32.lt_s
+    ;;         br_if $loop_j_neigh
+    ;;     end
+
+    ;;     local.get $i
+    ;;     i32.const 1
+    ;;     i32.add
+    ;;     local.tee $i
+    ;;     global.get $h
+    ;;     i32.lt_s
+    ;;     br_if $loop_i_neigh
+    ;;     end
+
+    ;;     i32.const 0
+    ;;     local.set $i
+    ;;     loop $loop_i_upd
+    ;;     i32.const 0
+    ;;     local.set $j
+    ;;     loop $loop_j_upd
+    ;;         local.get $i
+    ;;         local.get $j
+    ;;         call $is_alive
+    ;;         local.set $cell_alive
+
+    ;;         global.get $neigh_base
+    ;;         local.get $i
+    ;;         local.get $j
+    ;;         call $idx
+    ;;         i32.add
+    ;;         i32.load8_u
+    ;;         local.set $count
+
+    ;;         local.get $cell_alive
+    ;;         if (result i32)
+    ;;         local.get $count
+    ;;         i32.const 2
+    ;;         i32.eq
+    ;;         local.get $count
+    ;;         i32.const 3
+    ;;         i32.eq
+    ;;         i32.or
+    ;;         else
+    ;;         local.get $count
+    ;;         i32.const 3
+    ;;         i32.eq
+    ;;         end
+    ;;         local.set $live
+
+    ;;         i32.const 10000
+    ;;         call $random_i32
+    ;;         local.set $r
+
+    ;;         local.get $live
+    ;;         local.get $r
+    ;;         i32.eqz
+    ;;         i32.or
+    ;;         local.set $live
+
+    ;;         global.get $grid_base
+    ;;         local.get $i
+    ;;         local.get $j
+    ;;         call $idx
+    ;;         i32.add
+    ;;         local.get $live
+    ;;         i32.store8
+
+    ;;         local.get $j
+    ;;         i32.const 1
+    ;;         i32.add
+    ;;         local.tee $j
+    ;;         global.get $w
+    ;;         i32.lt_s
+    ;;         br_if $loop_j_upd
+    ;;     end
+
+    ;;     local.get $i
+    ;;     i32.const 1
+    ;;     i32.add
+    ;;     local.tee $i
+    ;;     global.get $h
+    ;;     i32.lt_s
+    ;;     br_if $loop_i_upd
+    ;;     end
+    ;; )
+
+    (func $main
+        call $init
+        
+        ;; ici faire loop
+        call $print_grid
+        ;; call $step
+    )
+
+    (start $main)
 )
  
 
