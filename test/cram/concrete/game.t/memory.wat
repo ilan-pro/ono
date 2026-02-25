@@ -1,30 +1,28 @@
 (module
-    (import "ono" "random_i32" (func $random_i32 (param i32) (result i32)))
-    (import "ono" "print_cell" (func $print_cell (param i32)))
-    (import "ono" "newline" (func $newline))
-    (import "ono" "clear_screen" (func $clear_screen))
 
-    (global $largeur i32 (i32.const 6))
-    (global $longueur i32 (i32.const 9))
+    (func $clear_screen (import "ono" "clear_screen"))
+    (func $newline (import "ono" "newline"))
+    (func $print_cell (import "ono" "print_cell") (param i32))
+    (func $print_i32 (import "ono" "print_i32") (param i32))
+    (func $random_i32 (import "ono" "random_i32") (param i32) (result i32))
+
+
+    (global $largeur i32 (i32.const 5))
+    (global $longueur i32 (i32.const 5))
     (memory 10) ;; taille arbitrairement grande (10 pages ~ 650 000 octets et un i32 c'est 4*8 bits donc on est large)
 
-    (func $addr_2d (param $i i32) (param $j i32) (result i32)
-        local.get $i
-        global.get $largeur
-        i32.mul
-        local.get $j
-        i32.add
-        i32.const 4
-        i32.mul)
-
     (func $init
-        (local $size i32)
+        (local $size i32) 
         (local $ptr i32)
+        (local $rand i32)
 
         global.get $largeur 
         global.get $longueur 
         i32.mul
-        local.set $size
+        (local.set $size)
+        (local.set $ptr (i32.const 0))
+        
+       
 
         (block $remplissage ;; on la remplit (TODO mette les valeurs aléatoire via random_I32)
             (loop $loop
@@ -37,9 +35,22 @@
                 local.set $size
 
                 ;; memory[i] = 0
-                local.get $ptr
-                i32.const 0
-                i32.store 
+                
+                i32.const 100
+                call $random_i32
+                i32.const 50
+                i32.gt_u
+
+                (if (then
+                    local.get $ptr
+                    i32.const 1
+                    i32.store )
+                (else
+                    local.get $ptr
+                    i32.const 0
+                    i32.store
+                    )
+                )
 
                 ;; i++
                 local.get $ptr
@@ -81,44 +92,22 @@
         global.get $largeur ;; j'ajoute la taille d'une colonne dans la pile afin de pouvoir multiplier la position de la ligne  
         i32.mul
         i32.add
-        i32.const 4
+        i32.const 4 ;; chaque i32 prends 4 octets mais il faut soustraire pour revenir au début de [i][j] donc -4
         i32.mul
         i32.load ;; memory [i][j]
     )
 
     (func $set_2d (param $i i32) (param $j i32) (param $v i32)
+        local.get $j
         local.get $i
-        local.get $j
-        call $in_bounds
-        i32.eqz
-        if
-            return
-        end
-        local.get $i
-        local.get $j
-        call $addr_2d
-        local.get $v
-        i32.store)
-
-    (func $in_bounds (param $i i32) (param $j i32) (result i32)
-        local.get $j
-        i32.const 0
-        i32.lt_s
-        local.get $j
         global.get $largeur
-        i32.ge_s
-        i32.or
-
-        local.get $i
-        i32.const 0
-        i32.lt_s
-        local.get $i
-        global.get $longueur
-        i32.ge_s
-        i32.or
-        i32.or
-
-        i32.eqz)
+        i32.mul
+        i32.add
+        i32.const 4
+        i32.mul
+        local.get $v
+        i32.store
+    )
 
     (func $get_1d (param $posi i32) (result i32)
         local.get $posi
@@ -167,7 +156,7 @@
             )
         )
         
-        ;; i
+        ;; i (on saute la cellule elle-meme : n != j)
         local.get $j_m1
         local.set $n 
         (block $i_1
@@ -175,12 +164,20 @@
                 (i32.eq (local.get $n) (i32.add (local.get $j) (i32.const 2))) 
                 br_if $i_1 
 
-                local.get $n
-                local.get $i
-                call $get_2d 
-                local.get $nb_neighboors
-                i32.add 
-                local.set $nb_neighboors
+                ;; skip si n == j (c'est la cellule elle-meme)
+                (block $skip
+                    local.get $n
+                    local.get $j
+                    i32.eq
+                    br_if $skip
+
+                    local.get $n
+                    local.get $i
+                    call $get_2d 
+                    local.get $nb_neighboors
+                    i32.add 
+                    local.set $nb_neighboors
+                )
 
                 (i32.add (local.get $n) (i32.const 1)) 
                 local.set $n
@@ -212,14 +209,125 @@
         local.get $nb_neighboors
     )
 
-    (func $step (export "step")
-        (local $i i32)
+    (func $print_grid 
+        (local $i i32) 
         (local $j i32)
-        (local $cell i32)
-        (local $n i32)
-        (local $live i32)
-        (local $r i32)
 
+        (call $clear_screen)
+        (local.set $i (i32.const 0))
+
+        (block $stop_i
+            (loop $loop_i
+        
+            (i32.eq (local.get $i) (global.get $longueur))
+            (br_if $stop_i)
+
+            (local.set $j (i32.const 0))
+
+            (block $stop_j
+                (loop $loop_j
+            
+                (i32.eq (local.get $j) (global.get $largeur))
+                (br_if $stop_j)
+
+                (call $print_cell
+                    (call $get_2d
+                    (local.get $i)
+                    (local.get $j)
+                    )
+                )
+
+                (local.set $j
+                    (i32.add (local.get $j) (i32.const 1))
+                )
+
+                (br $loop_j)
+                )
+            )
+
+            (call $newline)
+
+            (local.set $i
+                (i32.add (local.get $i) (i32.const 1))
+            )
+
+            (br $loop_i)
+            )
+        )
+    )
+
+    ;; Ecrit une valeur dans le buffer temporaire (adresse de base 2000)
+    (func $set_tmp (param $i i32) (param $j i32) (param $v i32)
+        local.get $j
+        local.get $i
+        global.get $largeur
+        i32.mul
+        i32.add
+        i32.const 4
+        i32.mul
+        i32.const 2000  ;; offset du buffer temporaire
+        i32.add
+        local.get $v
+        i32.store
+    )
+
+    ;; Recopie le buffer temporaire vers le buffer principal
+    (func $copy_tmp
+        (local $k i32)
+        (local $addr i32)
+        (local $val i32)
+
+        i32.const 0
+        local.set $k
+
+        (block $done
+            (loop $loop
+                local.get $k
+                global.get $largeur
+                global.get $longueur
+                i32.mul
+                i32.ge_s
+                br_if $done
+
+                ;; addr = k * 4
+                local.get $k
+                i32.const 4
+                i32.mul
+                local.set $addr
+
+                ;; val = memory[2000 + addr]
+                local.get $addr
+                i32.const 2000
+                i32.add
+                i32.load
+                local.set $val
+
+                ;; memory[addr] = val
+                local.get $addr
+                local.get $val
+                i32.store
+
+                ;; k++
+                local.get $k
+                i32.const 1
+                i32.add
+                local.tee $k
+                br $loop
+            )
+        )
+    )
+
+    ;; FONCTION STEP - Coeur du Game of Life
+    ;; Implémente les règles du Game of Life avec double buffer
+    ;; - Phase 1 : Calcule le nouvel état dans buffer temporaire
+    ;; - Phase 2 : Recopie le buffer temporaire vers grille principale
+    (func $step (export "step")
+        (local $i i32)    ;; Indice de ligne (0-19)
+        (local $j i32)    ;; Indice de colonne (0-19)
+        (local $n i32)    ;; Nombre de voisins vivants
+        (local $v i32)    ;; Nouvel état de la cellule
+
+        ;; PHASE 1 : PARCOURS ET CALCUL DANS BUFFER TEMPO
         i32.const 0
         local.set $i
         (block $done_i
@@ -228,102 +336,54 @@
                 local.set $j
                 (block $done_j
                     (loop $loop_j
-                        local.get $i
-                        local.get $j
-                        call $get_2d
-                        local.set $cell
-
+                        ;; Compter les voisins de la cellule (i,j)
+                        ;; Utilise la grille originale (pas le buffer temporaire)
                         local.get $i
                         local.get $j
                         call $count_neighboors
-                        local.get $cell
-                        i32.sub
                         local.set $n
+                        local.get $n
+                        call $print_i32
 
-                        local.get $cell
-                        if (result i32)
-                            local.get $n
-                            i32.const 2
-                            i32.eq
-                            local.get $n
-                            i32.const 3
-                            i32.eq
-                            i32.or
-                        else
-                            local.get $n
-                            i32.const 3
-                            i32.eq
-                        end
-                        local.set $live
 
-                        i32.const 10000
-                        call $random_i32
-                        local.set $r
-                        local.get $live
-                        local.get $r
-                        i32.eqz
-                        i32.or
-                        local.set $live
-
-                        local.get $i
-                        local.get $j
-                        local.get $live
-                        call $set_2d
-
-                        local.get $j
-                        i32.const 1
-                        i32.add
-                        local.tee $j
-                        global.get $largeur
-                        i32.lt_s
-                        br_if $loop_j
-                    )
-                )
-
-                local.get $i
-                i32.const 1
-                i32.add
-                local.tee $i
-                global.get $longueur
-                i32.lt_s
-                br_if $loop_i
-            )
-        ))
-
-    (func $print_grid (export "print_grid")
-    )
-
-    (;
-    Affiche la grille dans le terminal via des fonctions hôtes OCaml.
-
-    Principe :
-    - On parcourt toutes les cellules (i = lignes, j = colonnes)
-    - On lit l'état (0/1) avec get_2d
-    - On appelle print_cell(value) : côté OCaml, ça ajoute "🦊" ou " " dans un Buffer
-    - A la fin de chaque ligne : newline()
-    - A la fin : clear_screen() flush le Buffer vers stdout, puis le vide
-
-    (func $print_grid (export "print_grid")
-        (local $i i32)
-        (local $j i32)
-
-        ;; i = 0
-        i32.const 0
-        local.set $i
-        (block $done_i
-            (loop $loop_i
-                ;; j = 0
-                i32.const 0
-                local.set $j
-                (block $done_j
-                    (loop $loop_j
-                        ;; print_cell( get_2d(i, j) )
+                        ;; Récupérer l'état actuel de la cellule
                         local.get $i
                         local.get $j
                         call $get_2d
-                        call $print_cell
+                        local.set $v
 
-                        ;; j++ ; si j < largeur => continue la ligne
+                        ;; APPLIQUER LES RÈGLES DU GAME OF LIFE
+                        local.get $v
+                        i32.const 1
+                        i32.eq
+                        (if (result i32)
+                            ;; CELLULE VIVANTE : Survit avec 2 ou 3 voisins
+                            (then
+                                local.get $n
+                                i32.const 2
+                                i32.eq
+                                local.get $n
+                                i32.const 3
+                                i32.eq
+                                i32.or
+                            )
+                            ;; CELLULE MORTE : Naît avec exactement 3 voisins
+                            (else
+                                local.get $n
+                                i32.const 3
+                                i32.eq
+                            )
+                        )
+                        local.set $v
+
+                        ;; ÉCRIRE dans le BUFFER TEMPO (adresse 2000+)
+                        ;; Évite de modifier la grille pendant la lecture
+                        local.get $i
+                        local.get $j
+                        local.get $v
+                        call $set_tmp
+
+                        ;; Prochaine colonne
                         local.get $j
                         i32.const 1
                         i32.add
@@ -334,10 +394,7 @@
                     )
                 )
 
-                ;; fin de ligne : newline()
-                call $newline
-
-                ;; i++ ; si i < longueur => continue les lignes
+                ;; Prochaine ligne
                 local.get $i
                 i32.const 1
                 i32.add
@@ -347,16 +404,40 @@
                 br_if $loop_i
             )
         )
-
-        ;; petite ligne vide après la grille
-        call $newline
-        ;; flush du buffer + clear terminal
-        call $clear_screen
+        ;; PHASE 2 : RECOPIE BUFFER TEMPO VERS GRILLE PRINCIPALE
+        call $copy_tmp
     )
-    ;)
 
-    (func $main (export "_start")
-        call $step)
+   (func $main
+        (local $i i32)
+        
+        call $init  
+        
+        i32.const 5
+        local.set $i
 
-    (start $init)
+        (block $stop
+            (loop $loop
+                (i32.eq (local.get $i) (i32.const 0))
+                br_if $stop 
+
+                call $step
+                call $print_grid
+                (call $newline)
+                (call $newline)
+
+                (i32.sub (local.get $i) (i32.const 1))
+                local.set $i
+
+                br $loop
+            )
+        )
+
+        call $clear_screen  ;; ← flush le dernier buffer rempli
+    )
+
+    (start $main)
 )
+ 
+
+    

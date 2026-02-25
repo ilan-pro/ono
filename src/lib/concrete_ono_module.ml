@@ -12,7 +12,7 @@ let print_i64 (n : Kdo.Concrete.I64.t) : (unit, _) Result.t =
 
 let print_cell (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   let alive = Owi.Concrete_boolean.to_bool (Kdo.Concrete.I32.gt n Kdo.Concrete.I32.zero) in
-  Buffer.add_string buffer (if alive then "🦊" else " ");
+  Buffer.add_string buffer (if alive then "A" else "B");
   Ok ()
 
 let newline () : (unit, _) Result.t =

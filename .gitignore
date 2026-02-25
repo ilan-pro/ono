@@ -2,4 +2,7 @@ _build
 *.coverage
 _coverage
 _opam
-.DS_Store
+.DS_Storedune
+_dune/
+dune-project
+
