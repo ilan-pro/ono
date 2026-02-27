@@ -12,7 +12,7 @@ let print_i64 (n : Kdo.Concrete.I64.t) : (unit, _) Result.t =
 
 let print_cell (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   let alive = Owi.Concrete_boolean.to_bool (Kdo.Concrete.I32.gt n Kdo.Concrete.I32.zero) in
-  Buffer.add_string buffer (if alive then "A" else "B");
+  Buffer.add_string buffer (if alive then "🦊 " else "x  ");
   Ok ()
 
 let newline () : (unit, _) Result.t =
@@ -20,7 +20,7 @@ let newline () : (unit, _) Result.t =
   Ok ()
 
 let clear_screen () : (unit, _) Result.t =
-  Format.printf "\027[2J";
+  (* Format.printf "\027[2J"; *)
   Buffer.output_buffer stdout buffer;
   flush stdout;
   Buffer.clear buffer;
@@ -34,6 +34,18 @@ let random_i32 (n : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
   let random_val = Random.int max_val in
   Ok (Kdo.Concrete.I32.of_int random_val)
 
+let debogue_index (n : Kdo.Concrete.I32.t) : (unit, _) Result.t = 
+  Logs.app (fun m -> m "indice : %a" Kdo.Concrete.I32.pp n);
+  Ok ()
+
+let debogue_valeur (n : Kdo.Concrete.I32.t) : (unit, _) Result.t = 
+  Logs.app (fun m -> m "valeur : %a" Kdo.Concrete.I32.pp n);
+  Ok ()
+
+let print_separateur (n : Kdo.Concrete.I32.t) : (unit, _) Result.t = 
+  Logs.app (fun m -> m "-------------itération %a-----------------" Kdo.Concrete.I32.pp n);
+  Ok ()
+
 let m =
   let open Kdo.Concrete.Extern_func in
   let open Kdo.Concrete.Extern_func.Syntax in
@@ -45,6 +57,9 @@ let m =
       ("print_cell", Extern_func (i32 ^->. unit, print_cell));
       ("newline", Extern_func (unit ^->. unit, newline));
       ("clear_screen", Extern_func (unit ^->. unit, clear_screen));
+      ("debogue_index", Extern_func (i32 ^->. unit, debogue_index));
+      ("debogue_valeur", Extern_func (i32 ^->. unit, debogue_valeur));
+      ("print_separateur", Extern_func (i32 ^->. unit, print_separateur));
     ]
   in
   {
