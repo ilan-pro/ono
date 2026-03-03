@@ -20,7 +20,7 @@
       )
     )
   )
-
+  
   (func $main
     i32.const 10
     call $f
