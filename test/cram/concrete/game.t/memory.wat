@@ -2,13 +2,17 @@
 
     (func $clear_screen (import "ono" "clear_screen"))
     (func $newline (import "ono" "newline"))
-    (func $print_cell (import "ono" "print_cell") (param i32))
+    (func $cell_print (import "ono" "cell_print") (param i32))
     (func $print_i32 (import "ono" "print_i32") (param i32))
     (func $random_i32 (import "ono" "random_i32") (param i32) (result i32))
+    (func $debogue_index (import "ono" "debogue_index") (param i32))
+    (func $debogue_valeur (import "ono" "debogue_valeur") (param i32))
+    (func $print_separateur (import "ono" "print_separateur") (param i32))
+    (func $read_int (import "ono" "read_int") (result i32))
 
 
-    (global $largeur i32 (i32.const 5))
-    (global $longueur i32 (i32.const 5))
+    (global $largeur (mut i32) (i32.const 0))
+    (global $longueur (mut i32) (i32.const 0))
     (memory 10) ;; taille arbitrairement grande (10 pages ~ 650 000 octets et un i32 c'est 4*8 bits donc on est large)
 
     (func $init
@@ -38,7 +42,7 @@
                 
                 i32.const 100
                 call $random_i32
-                i32.const 50
+                i32.const 50 ;; 50% de chance d'avoir une cellule vivante
                 i32.gt_u
 
                 (if (then
@@ -143,8 +147,8 @@
                 (i32.eq (local.get $n) (i32.add (local.get $j) (i32.const 2))) 
                 br_if $i_1 
 
-                local.get $n
                 local.get $i_m1
+                local.get $n
                 call $get_2d 
                 local.get $nb_neighboors
                 i32.add ;; nb_neighboors = memory[i-1][j-1] + nb_neighboors 
@@ -171,8 +175,8 @@
                     i32.eq
                     br_if $skip
 
-                    local.get $n
                     local.get $i
+                    local.get $n
                     call $get_2d 
                     local.get $nb_neighboors
                     i32.add 
@@ -193,8 +197,8 @@
                 (i32.eq (local.get $n) (i32.add (local.get $j) (i32.const 2))) 
                 br_if $i_1 
 
-                local.get $n
                 local.get $i_p1
+                local.get $n
                 call $get_2d 
                 local.get $nb_neighboors
                 i32.add
@@ -213,7 +217,6 @@
         (local $i i32) 
         (local $j i32)
 
-        (call $clear_screen)
         (local.set $i (i32.const 0))
 
         (block $stop_i
@@ -230,12 +233,23 @@
                 (i32.eq (local.get $j) (global.get $largeur))
                 (br_if $stop_j)
 
-                (call $print_cell
+                (call $cell_print
                     (call $get_2d
                     (local.get $i)
                     (local.get $j)
                     )
                 )
+
+                ;; local.get $i
+                ;; local.get $j
+                ;; call $get_2d
+                ;; call $debogue_valeur
+                ;; local.get $i
+                ;; call $debogue_index
+                ;; local.get $j
+                ;; call $debogue_index
+                
+
 
                 (local.set $j
                     (i32.add (local.get $j) (i32.const 1))
@@ -254,6 +268,7 @@
             (br $loop_i)
             )
         )
+        (call $clear_screen)
     )
 
     ;; Ecrit une valeur dans le buffer temporaire (adresse de base 2000)
@@ -311,7 +326,8 @@
                 local.get $k
                 i32.const 1
                 i32.add
-                local.tee $k
+                ;; local.tee $k
+                local.set $k
                 br $loop
             )
         )
@@ -321,7 +337,7 @@
     ;; Implémente les règles du Game of Life avec double buffer
     ;; - Phase 1 : Calcule le nouvel état dans buffer temporaire
     ;; - Phase 2 : Recopie le buffer temporaire vers grille principale
-    (func $step (export "step")
+    (func $step 
         (local $i i32)    ;; Indice de ligne (0-19)
         (local $j i32)    ;; Indice de colonne (0-19)
         (local $n i32)    ;; Nombre de voisins vivants
@@ -342,8 +358,14 @@
                         local.get $j
                         call $count_neighboors
                         local.set $n
-                        local.get $n
-                        call $print_i32
+
+                        ;; debogue
+                        ;; local.get $i 
+                        ;; call $debogue_index
+                        ;; local.get $j 
+                        ;; call $debogue_index
+                        ;; local.get $n
+                        ;; call $debogue_valeur
 
 
                         ;; Récupérer l'état actuel de la cellule
@@ -384,10 +406,12 @@
                         call $set_tmp
 
                         ;; Prochaine colonne
+                        ;; j++
                         local.get $j
                         i32.const 1
                         i32.add
                         local.tee $j
+                        ;; if j < largeur
                         global.get $largeur
                         i32.lt_s
                         br_if $loop_j
@@ -409,32 +433,38 @@
     )
 
    (func $main
-        (local $i i32)
-        
-        call $init  
-        
-        i32.const 5
-        local.set $i
+    (local $i i32)
 
-        (block $stop
-            (loop $loop
-                (i32.eq (local.get $i) (i32.const 0))
-                br_if $stop 
+    call $read_int
+    global.set $largeur
 
-                call $step
-                call $print_grid
-                (call $newline)
-                (call $newline)
+    call $read_int
+    global.set $longueur
 
-                (i32.sub (local.get $i) (i32.const 1))
-                local.set $i
+    call $init  
 
-                br $loop
-            )
+    i32.const 0
+    local.set $i
+
+    (block $stop
+        (loop $loop
+            (i32.eq (local.get $i) (i32.const 5))
+            br_if $stop 
+
+            local.get $i 
+            (call $print_separateur)
+            call $print_grid
+            call $step
+
+            (i32.add (local.get $i) (i32.const 1))
+            local.set $i
+
+            br $loop
         )
-
-        call $clear_screen  ;; ← flush le dernier buffer rempli
     )
+
+    call $clear_screen  ;; flush le dernier état
+)
 
     (start $main)
 )
