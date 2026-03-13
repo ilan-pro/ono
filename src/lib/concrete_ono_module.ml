@@ -58,6 +58,12 @@ let cell_print (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   else Buffer.add_string buffer "x  ";
   Ok ()
 
+let steps_arg = ref 0
+let set_steps_arg n = steps_arg := n
+
+let get_steps () : (Kdo.Concrete.I32.t, _) Result.t =
+  Ok (Kdo.Concrete.I32.of_int !steps_arg)
+
 let config_not_null () : (Kdo.Concrete.I32.t, _) Result.t =
   let value = if !global_config <> None then 1 else 0 in
   Ok (Kdo.Concrete.I32.of_int value)
@@ -106,6 +112,7 @@ let m =
       (* pour le debug *)
       ("debogue_index", Extern_func (i32 ^->. unit, debogue_index));
       ("debogue_valeur", Extern_func (i32 ^->. unit, debogue_valeur));
+      ("get_steps", Extern_func (unit ^->. i32, get_steps));
       ("config_not_null", Extern_func (unit ^->. i32, config_not_null));
       ("get_width", Extern_func (unit ^->. i32, get_width));
       ("get_length", Extern_func (unit ^->. i32, get_length));

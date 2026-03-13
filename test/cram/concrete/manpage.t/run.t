@@ -4,15 +4,22 @@ Test the output of the man page:
          ono-concrete
   
   SYNOPSIS
-         ono concrete [--seed=INT] [OPTION]… FILE
+         ono concrete [--config=CONFIG] [--seed=INT] [--steps=INT] [OPTION]…
+         FILE
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
   
   OPTIONS
+         --config=CONFIG
+             File JSON for handmade configuration
+  
          --seed=INT
              Seed for random number generator.
+  
+         --steps=INT
+             Step pour limiter le nbr d'itération TODO
   
   COMMON OPTIONS
          --color=WHEN (absent=auto)

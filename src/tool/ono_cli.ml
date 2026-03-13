@@ -101,6 +101,10 @@ let seed =
 
 (* Définition de l'option seed pour la CLI *)
 
+let steps =
+  let doc = "Step pour limiter le nbr d'itération TODO" in
+  Arg.(value & opt (some int) None & info [ "steps" ] ~doc ~docv:"INT")
+
 let json_config =
   let doc = "File JSON for handmade configuration" in
   Arg.(

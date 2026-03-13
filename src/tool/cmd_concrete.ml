@@ -11,10 +11,14 @@ let term =
   let+ () = setup_log
   and+ source_file = source_file
   and+ seed = seed
-  and+ json_config = json_config in
+  and+ json_config = json_config
+  and+ steps = steps in
 
   (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
+  (match steps with
+  | Some n -> Ono.Concrete_ono_module.set_steps_arg n
+  | None -> Ono.Concrete_ono_module.set_steps_arg 8);
 
   (* le fichier json *)
   let json =
