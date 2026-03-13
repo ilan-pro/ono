@@ -1,6 +1,7 @@
 (library
  (public_name ono)
  (modules
+  concrete_config
   concrete_driver
   concrete_ono_module
   error

@@ -48,6 +48,20 @@ let log_level =
 
 (* Arguments helpers. *)
 
+(* il faut accepter aussi du json *)
+(* même logique que pour accepter le fichier pour le premier argument FILE mais ici je spécifie l'extension qui doit être json *)
+let existing_file_json =
+  let parse s =
+    let open Ono.Syntax in
+    let* path = Fpath.of_string s in
+    let* exists = Bos.OS.File.exists path in
+    let json = Fpath.has_ext "json" path in
+    if exists && json then Ok path
+    else if not exists then Fmt.error_msg "file does not exist"
+    else Fmt.error_msg "file must have .json extension"
+  in
+  Arg.conv (parse, Fpath.pp)
+
 let existing_file_conv =
   let parse s =
     let open Ono.Syntax in
@@ -86,3 +100,10 @@ let seed =
   Arg.(value & opt (some int) None & info [ "seed" ] ~doc ~docv:"INT")
 
 (* Définition de l'option seed pour la CLI *)
+
+let json_config =
+  let doc = "File JSON for handmade configuration" in
+  Arg.(
+    value
+    & opt (some existing_file_json) None
+    & info [ "config" ] ~doc ~docv:"CONFIG")

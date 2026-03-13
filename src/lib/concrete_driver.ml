@@ -1,7 +1,22 @@
+open Concrete_config
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~source_file =
+(* todo : ()  *)
+let run ~source_file ?json () =
+  (* json *)
+  let config_json =
+    match json with None -> None | Some js -> Some (parse_config js)
+  in
+  (match config_json with
+  | None -> Logs.info (fun m -> m "No config json, using defaults")
+  | Some conf ->
+      Logs.info (fun m ->
+          m "Run with width:%d height:%d" conf.width conf.length));
+
+  (* je donne la config à mon module ono via reference *)
+  global_config := config_json;
+
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);
   let* wat_module = Kdo.Parse.Wat.Module.from_file source_file in

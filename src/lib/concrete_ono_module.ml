@@ -1,9 +1,16 @@
+open Concrete_config
+
 type extern_func = Kdo.Concrete.Extern_func.extern_func
 
 let buffer = Buffer.create 4096
 
 let print_i32 (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   Logs.app (fun m -> m "%a" Kdo.Concrete.I32.pp n);
+  Ok ()
+
+let print_i32_custom (i : Kdo.Concrete.I32.t) (j : Kdo.Concrete.I32.t) :
+    (unit, _) Result.t =
+  Logs.app (fun m -> m "%a %a" Kdo.Concrete.I32.pp i Kdo.Concrete.I32.pp j);
   Ok ()
 
 let print_i64 (n : Kdo.Concrete.I64.t) : (unit, _) Result.t =
@@ -51,6 +58,34 @@ let cell_print (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   else Buffer.add_string buffer "x  ";
   Ok ()
 
+let config_not_null () : (Kdo.Concrete.I32.t, _) Result.t =
+  let value = if !global_config <> None then 1 else 0 in
+  Ok (Kdo.Concrete.I32.of_int value)
+
+let get_width () : (Kdo.Concrete.I32.t, _) Result.t =
+  let width = match !global_config with Some conf -> conf.width | None -> 0 in
+  let value = if width > 0 then width else 0 in
+  Ok (Kdo.Concrete.I32.of_int value)
+
+let get_length () : (Kdo.Concrete.I32.t, _) Result.t =
+  let length =
+    match !global_config with Some conf -> conf.length | None -> 0
+  in
+  let value = if length > 0 then length else 0 in
+  Ok (Kdo.Concrete.I32.of_int value)
+
+let get_alive (i : Kdo.Concrete.I32.t) (j : Kdo.Concrete.I32.t) :
+    (Kdo.Concrete.I32.t, _) Result.t =
+  let i = Kdo.Concrete.I32.to_int i in
+  let j = Kdo.Concrete.I32.to_int j in
+  let alive =
+    match !global_config with Some conf -> conf.alive | None -> []
+  in
+  let value =
+    if List.exists (fun (x, y) -> x = i && y = j) alive then 1 else 0
+  in
+  Ok (Kdo.Concrete.I32.of_int value)
+
 let m =
   let open Kdo.Concrete.Extern_func in
   let open Kdo.Concrete.Extern_func.Syntax in
@@ -60,6 +95,7 @@ let m =
       ("print_i32", Extern_func (i32 ^->. unit, print_i32));
       ("print_i64", Extern_func (i64 ^->. unit, print_i64));
       ("random_i32", Extern_func (i32 ^->. i32, random_i32));
+      ("print_i32_custom", Extern_func (i32 ^-> i32 ^->. unit, print_i32_custom));
       (* pour le formatage *)
       ("newline", Extern_func (unit ^->. unit, newline));
       ("clear_screen", Extern_func (unit ^->. unit, clear_screen));
@@ -70,6 +106,10 @@ let m =
       (* pour le debug *)
       ("debogue_index", Extern_func (i32 ^->. unit, debogue_index));
       ("debogue_valeur", Extern_func (i32 ^->. unit, debogue_valeur));
+      ("config_not_null", Extern_func (unit ^->. i32, config_not_null));
+      ("get_width", Extern_func (unit ^->. i32, get_width));
+      ("get_length", Extern_func (unit ^->. i32, get_length));
+      ("get_alive", Extern_func (i32 ^-> i32 ^->. i32, get_alive));
     ]
   in
   {

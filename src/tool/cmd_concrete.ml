@@ -8,10 +8,29 @@ let info = Cmd.info "concrete" ~exits
 let term =
   let open Term.Syntax in
   (* les + servent à concatenner les argments/options de la cmd *)
-  let+ () = setup_log and+ source_file = source_file and+ seed = seed in
+  let+ () = setup_log
+  and+ source_file = source_file
+  and+ seed = seed
+  and+ json_config = json_config in
+
+  (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
+
+  (* le fichier json *)
+  let json =
+    match json_config with
+    | None -> None
+    | Some path ->
+        (* Bos.OS... sert à transformer le fichier sous forme de result string pour ensuite le transformer
+        en Yojson.safe.t *)
+        let content = Bos.OS.File.read path |> Result.to_option in
+        (* le format yojson est une bibliothèque d'ocaml pour exploiter du json sous forme d'arbre syntaxique *)
+        Option.map Yojson.Safe.from_string content
+  in
+
   (* c ici que le moteur d'owi execute les .wat *)
-  Ono.Concrete_driver.run ~source_file |> function
+  (* todo : on ajouter () pour ... *)
+  Ono.Concrete_driver.run ~source_file ?json () |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))
 

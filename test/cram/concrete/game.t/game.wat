@@ -4,14 +4,19 @@
     (func $newline (import "ono" "newline"))
     (func $cell_print (import "ono" "cell_print") (param i32))
     (func $print_i32 (import "ono" "print_i32") (param i32))
+    (func $print_i32_custom (import "ono" "print_i32_custom") (param i32) (param i32))
     (func $random_i32 (import "ono" "random_i32") (param i32) (result i32))
     (func $debogue_index (import "ono" "debogue_index") (param i32))
     (func $debogue_valeur (import "ono" "debogue_valeur") (param i32))
     (func $print_separateur (import "ono" "print_separateur") (param i32))
+    (func $config_not_null (import "ono" "config_not_null") (result i32))
+    (func $get_width (import "ono" "get_width") (result i32))
+    (func $get_length (import "ono" "get_length") (result i32))
+    (func $get_alive (import "ono" "get_alive") (param i32) (param i32) (result i32))
 
 
-    (global $largeur i32 (i32.const 4))
-    (global $longueur i32 (i32.const 4))
+    (global $largeur (mut i32) (i32.const 4))
+    (global $longueur (mut i32) (i32.const 4))
     (memory 10) ;; taille arbitrairement grande (10 pages ~ 650 000 octets et un i32 c'est 4*8 bits donc on est large)
 
     (func $init
@@ -66,6 +71,80 @@
         )
     )
 
+    (func $init_with_config
+        (local $size i32) 
+        (local $ptr i32)
+        (local $rand i32)
+        (local $i i32) ;; obligé pour avoir la vraie position dans le décalage car on travaille avec 
+        ;; des cases mémoire sur 32 bits soit 4 octets et donc ptr pointe sur l'adresse d'une case
+        ;; qui n'est pas forcémenet 0,1,2...
+
+        call $get_width
+        call $get_length
+
+        global.set $longueur 
+        global.set $largeur 
+        
+
+        (i32.mul (global.get $longueur) (global.get $largeur))
+
+        (local.set $size)
+        (local.set $ptr (i32.const 0))
+        (local.set $i (i32.const 0))
+
+        (block $remplissage ;; on la remplit (TODO mette les valeurs aléatoire via random_I32)
+            (loop $loop
+                ;; if n == 0 then void
+                (i32.eq (local.get $size) (i32.const 0))
+                br_if $remplissage
+
+                ;; n-1
+                (i32.sub (local.get $size) (i32.const 1))
+                local.set $size
+                
+                (call $get_alive (call $get_pos_2d (local.get $i)))
+
+                (if (then
+                    local.get $ptr
+                    i32.const 1
+                    i32.store )
+                (else
+                    local.get $ptr
+                    i32.const 0
+                    i32.store
+                    )
+                )
+
+                ;; ptr++ (donc ajouter 4 octets à chaque fois)
+                (i32.add (local.get $ptr) (i32.const 4))
+                local.set $ptr
+
+                ;; i++
+                (local.set $i (i32.add (local.get $i) (i32.const 1))) 
+
+                br $loop
+            )
+        )
+    )
+
+    ;; fonction pour transformer position en cordonnée matriciel
+    (func $get_pos_2d (param $pos i32) (result i32 i32)
+        (local $i i32)
+        (local $j i32)
+
+        ;; division entière non signée 
+        (local.set $i (i32.div_u (local.get $pos) (global.get $largeur)))
+        ;; rem c'est le reste de la division non signée soit le modulo 
+        (local.set $j (i32.rem_u (local.get $pos) (global.get $largeur)))
+
+        (local.get $i)
+        (local.get $j)
+
+        ;; (local.get $i)
+        ;; (local.get $j)
+        ;; (call $print_i32_custom)
+    )
+
     (func $get_2d (param $i i32) (param $j i32) (result i32)
         ;; on vérifie avant si on est pas hors limite
         local.get $j ;; numéro de la colonne 
@@ -95,7 +174,7 @@
         global.get $largeur ;; j'ajoute la taille d'une colonne dans la pile afin de pouvoir multiplier la position de la ligne  
         i32.mul
         i32.add
-        i32.const 4 ;; chaque i32 prends 4 octets mais il faut soustraire pour revenir au début de [i][j] donc -4
+        i32.const 4
         i32.mul
         i32.load ;; memory [i][j]
     )
@@ -433,8 +512,12 @@
 
    (func $main
         (local $i i32)
-        
-        call $init  
+        call $config_not_null
+
+        (if 
+            (then call $init_with_config) 
+            (else call $init)  
+        )
 
         i32.const 0
         local.set $i
