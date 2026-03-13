@@ -111,3 +111,12 @@ let json_config =
     value
     & opt (some existing_file_json) None
     & info [ "config" ] ~doc ~docv:"CONFIG")
+
+
+let last =
+  let doc = "Affiche les n dernieres itérations." in
+  Arg.(
+    value
+    & opt (some int) None 
+    & info [ "last" ] ~doc ~docv:"INT"
+  )

@@ -12,7 +12,12 @@ let term =
   and+ source_file = source_file
   and+ seed = seed
   and+ json_config = json_config
-  and+ steps = steps in
+  and+ steps = steps 
+  and+ last = last in
+
+    (match last with
+  | Some n -> Ono.Concrete_ono_module.set_last_arg n
+  | None -> Ono.Concrete_ono_module.set_last_arg 8);
 
   (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());

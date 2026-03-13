@@ -10,6 +10,7 @@
     (func $debogue_valeur (import "ono" "debogue_valeur") (param i32))
     (func $print_separateur (import "ono" "print_separateur") (param i32))
     (func $get_steps (import "ono" "get_steps") (result i32))
+    (func $get_last (import "ono" "get_last") (result i32))
     (func $config_not_null (import "ono" "config_not_null") (result i32))
     (func $get_width (import "ono" "get_width") (result i32))
     (func $get_length (import "ono" "get_length") (result i32))
@@ -514,6 +515,8 @@
    (func $main
         (local $i i32)
         (local $borne i32)
+        (local $iterlast i32)
+
         call $config_not_null
 
         (if 
@@ -526,6 +529,10 @@
 
         (call $get_steps)
         (local.set $borne)
+        (local.get $borne)
+        (call $get_last)
+        (i32.sub)
+        (local.set $iterlast)
 
         (block $stop
             (loop $loop
@@ -535,8 +542,14 @@
 
                 ;; ordre pour bien voir tous les affichages
                 local.get $i 
-                (call $print_separateur)
-                call $print_grid
+                (i32.ge_s (local.get $i)  (local.get $iterlast))
+                   (if (then
+                        (local.get $i)  
+                        (call $print_separateur)
+                        (call $print_grid)
+                        )
+                    )
+               
                 call $step
 
                 (i32.add (local.get $i) (i32.const 1))
