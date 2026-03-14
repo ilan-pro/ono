@@ -1,0 +1,1 @@
+  $ ono concrete game.wat --seed=42 --config ../../../../config/block.json

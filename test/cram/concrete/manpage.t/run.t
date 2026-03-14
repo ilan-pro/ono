@@ -4,8 +4,7 @@ Test the output of the man page:
          ono-concrete
   
   SYNOPSIS
-         ono concrete [--config=CONFIG] [--seed=INT] [--steps=INT] [OPTION]…
-         FILE
+         ono concrete [OPTION]… FILE
   
   ARGUMENTS
          FILE (required)
@@ -14,6 +13,9 @@ Test the output of the man page:
   OPTIONS
          --config=CONFIG
              File JSON for handmade configuration
+  
+         --last=INT
+             Affiche les n dernieres itérations.
   
          --seed=INT
              Seed for random number generator.
