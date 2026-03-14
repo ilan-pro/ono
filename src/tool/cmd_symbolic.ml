@@ -8,7 +8,7 @@ let info = Cmd.info "symbolic" ~exits
 let term =
   let open Term.Syntax in
   let+ () = setup_log and+ source_file = source_file in
-  Ono.Symbolic_driver.run ~source_file |> function
+  Ono.Symbolic_driver.run ~source_file () |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))
 

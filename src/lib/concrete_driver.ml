@@ -1,12 +1,7 @@
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~source_file ~seed =
-  (* Initialisation du RNG si seed fourni *)
-  (match seed with
-   | Some s -> Random.init s
-   | None -> Random.self_init ());
-  
+let run ~source_file =
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);
   let* wat_module = Kdo.Parse.Wat.Module.from_file source_file in

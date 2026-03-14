@@ -1,7 +1,22 @@
+open Concrete_config
 open Syntax
-module Interpret = Kdo.Interpret.Symbolic (Kdo.Interpret.Default_parameters)
+module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~source_file =
+(* todo : ()  *)
+let run ~source_file ?json () =
+  (* json *)
+  let config_json =
+    match json with None -> None | Some js -> Some (parse_config js)
+  in
+  (match config_json with
+  | None -> Logs.info (fun m -> m "No config json, using defaults")
+  | Some conf ->
+      Logs.info (fun m ->
+          m "Run with width:%d height:%d" conf.width conf.length));
+
+  (* je donne la config à mon module ono via reference *)
+  global_config := config_json;
+
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);
   let* wat_module = Kdo.Parse.Wat.Module.from_file source_file in
@@ -20,11 +35,11 @@ let run ~source_file =
 
   (* Linking. *)
   Logs.info (fun m -> m "Linking...");
-  let link_state : Kdo.Symbolic.Extern_func.extern_func Kdo.Link.State.t =
+  let link_state : Kdo.Concrete.Extern_func.extern_func Kdo.Link.State.t =
     Kdo.Link.State.empty ()
   in
   let link_state =
-    Kdo.Link.Extern.modul Symbolic_ono_module.m link_state ~name:"ono"
+    Kdo.Link.Extern.modul Concrete_ono_module.m link_state ~name:"ono"
   in
   let name = Some (Fpath.to_string source_file) in
   let* linked_module, link_state =
@@ -34,14 +49,3 @@ let run ~source_file =
   (* Interpreting. *)
   Logs.info (fun m -> m "Interpreting...");
   Interpret.modul link_state linked_module
-  |> Kdo.Symbolic.Driver.handle_result
-       ~exploration_strategy:Kdo.Symbolic.Parameters.Exploration_strategy.FIFO
-       ~workers:4 ~no_stop_at_failure:false ~no_value:false
-       ~no_assert_failure_expression_printing:false
-       ~deterministic_result_order:false ~fail_mode:Kdo.Symbolic.Parameters.Both
-       ~workspace:(Fpath.v ".") ~solver:Smtml.Solver_type.Z3_solver
-       ~model_format:Kdo.Symbolic.Model.Scfg ~model_out_file:None
-       ~with_breadcrumbs:true ~run_time:None
-  |> function
-  | Ok () -> Ok ()
-  | Error e -> Fmt.error_msg "owi error: %s" (Owi.Result.err_to_string e)
