@@ -103,6 +103,11 @@ let get_alive (i : Kdo.Concrete.I32.t) (j : Kdo.Concrete.I32.t) :
     if List.exists (fun (x, y) -> x = i && y = j) alive then 1 else 0
   in
   Ok (Kdo.Concrete.I32.of_int value)
+let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
+  print_string "Entrez une valeur : ";
+  flush stdout;
+  let n = Scanf.scanf " %d" (fun x -> x) in
+  Ok (Kdo.Concrete.I32.of_int n)
 
 let m =
   let open Kdo.Concrete.Extern_func in
@@ -130,6 +135,8 @@ let m =
       ("get_width", Extern_func (unit ^->. i32, get_width));
       ("get_length", Extern_func (unit ^->. i32, get_length));
       ("get_alive", Extern_func (i32 ^-> i32 ^->. i32, get_alive));
+      (* pour la saisie utilisateur *)
+      ("read_int", Extern_func (unit ^->. i32, read_int));
     ]
   in
   {

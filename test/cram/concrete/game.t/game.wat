@@ -15,6 +15,7 @@
     (func $get_width (import "ono" "get_width") (result i32))
     (func $get_length (import "ono" "get_length") (result i32))
     (func $get_alive (import "ono" "get_alive") (param i32) (param i32) (result i32))
+    (func $read_int (import "ono" "read_int") (result i32))
 
 
     (global $largeur (mut i32) (i32.const 4))
@@ -512,10 +513,17 @@
         call $copy_tmp
     )
 
-   (func $main
+ 
+    (func $main
         (local $i i32)
         (local $borne i32)
         (local $iterlast i32)
+
+        call $read_int
+        global.set $largeur
+
+        call $read_int
+        global.set $longueur
 
         call $config_not_null
 
@@ -562,6 +570,5 @@
 
     (start $main)
 )
- 
 
     
