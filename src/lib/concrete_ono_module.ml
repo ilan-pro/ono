@@ -109,6 +109,48 @@ let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
   let n = Scanf.scanf " %d" (fun x -> x) in
   Ok (Kdo.Concrete.I32.of_int n)
 
+  open Raylib
+  (* open Tsdl *)
+  let open_window () : (unit,_) Result.t =
+     init_window 800 800 "Game of life";
+    Ok()
+
+  
+  let close_window () : (unit,_) Result.t =
+    close_window();
+    Ok() 
+
+  let is_close () : (Kdo.Concrete.I32.t,_) Result.t =
+    let b = if window_should_close() then 0 else 1 in
+    Ok(Kdo.Concrete.I32.of_int b)
+
+  let begin_drawing () : (unit,_) Result.t =
+    begin_drawing();
+    Ok()
+  
+  let end_drawing () : (unit,_) Result.t =
+    end_drawing();
+    Ok() 
+  
+  let clear_background () : (unit,_) Result.t =
+    clear_background Color.raywhite;
+    Ok()
+
+  let cell_print_inter (is_alive : Kdo.Concrete.I32.t) (row : Kdo.Concrete.I32.t) (column : Kdo.Concrete.I32.t) : (unit, _) Result.t =
+      let size = Vector2.create 200.0 200.0 in
+      let x = float_of_int (Kdo.Concrete.I32.to_int column * 200) in
+      let y = float_of_int (Kdo.Concrete.I32.to_int row * 200) in
+      let pos = Vector2.create x y in
+      if is_alive <> Kdo.Concrete.I32.of_int 0 then (
+        draw_rectangle_v pos size Color.black;
+        draw_rectangle_lines (Kdo.Concrete.I32.to_int column * 200) (Kdo.Concrete.I32.to_int row * 200) 200 200 Color.blue
+      )
+      else (
+        draw_rectangle_v pos size Color.red;
+        draw_rectangle_lines (Kdo.Concrete.I32.to_int column * 200) (Kdo.Concrete.I32.to_int row * 200) 200 200 Color.blue
+      );
+    Ok ()
+
 let m =
   let open Kdo.Concrete.Extern_func in
   let open Kdo.Concrete.Extern_func.Syntax in
@@ -137,7 +179,15 @@ let m =
       ("get_alive", Extern_func (i32 ^-> i32 ^->. i32, get_alive));
       (* pour la saisie utilisateur *)
       ("read_int", Extern_func (unit ^->. i32, read_int));
-    ]
+      (*  *)
+      ("open_window" , Extern_func(unit ^->. unit, open_window));
+      ("close_window" , Extern_func(unit ^->. unit, close_window));
+      ("is_close" , Extern_func(unit ^->. i32, is_close));
+      ("end_drawing" , Extern_func(unit ^->. unit, end_drawing));
+      ("begin_drawing" , Extern_func(unit ^->. unit, begin_drawing));
+      ("clear_background" , Extern_func(unit ^->. unit, clear_background));
+      ("cell_print_inter", Extern_func(i32 ^-> i32 ^-> i32 ^->. unit, cell_print_inter));
+      ]
   in
   {
     Kdo.Extern.Module.functions;

@@ -8,6 +8,6 @@
   symbolic_driver
   symbolic_ono_module
   syntax)
- (libraries fpath kdo logs)
+ (libraries fpath kdo logs raylib tsdl)
  (instrumentation
   (backend bisect_ppx)))

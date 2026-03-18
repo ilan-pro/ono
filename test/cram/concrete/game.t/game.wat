@@ -16,7 +16,15 @@
     (func $get_length (import "ono" "get_length") (result i32))
     (func $get_alive (import "ono" "get_alive") (param i32) (param i32) (result i32))
     (func $read_int (import "ono" "read_int") (result i32))
-
+    
+    (func $open_window (import "ono" "open_window"))
+    (func $close_window (import "ono" "close_window"))
+    (func $is_close (import "ono" "is_close") (result i32))
+    (func $end_drawing (import "ono" "end_drawing"))
+    (func $begin_drawing (import "ono" "begin_drawing"))
+    (func $cell_print_inter (import "ono" "cell_print_inter") (param i32) (param i32) (param i32))
+    (func $clear_background (import "ono" "clear_background"))
+    (func $sleep (import "ono" "sleep") (param i32))
 
     (global $largeur (mut i32) (i32.const 4))
     (global $longueur (mut i32) (i32.const 4))
@@ -513,11 +521,66 @@
         call $copy_tmp
     )
 
- 
-    (func $main
+    (func $print_grid_inter 
+        (local $i i32) 
+        (local $j i32)
+
+        (call $begin_drawing)
+        (call $clear_background)
+
+        (local.set $i (i32.const 0))
+
+        (block $stop_i
+            (loop $loop_i
+        
+            (i32.eq (local.get $i) (global.get $longueur))
+            (br_if $stop_i)
+
+            (local.set $j (i32.const 0))
+
+            (block $stop_j
+                (loop $loop_j
+            
+                (i32.eq (local.get $j) (global.get $largeur))
+                (br_if $stop_j)
+
+                (call $cell_print_inter
+                    (call $get_2d
+                    (local.get $i)
+                    (local.get $j)
+                    )
+                    (local.get $i)
+                    (local.get $j)
+                )
+                (local.set $j
+                    (i32.add (local.get $j) (i32.const 1))
+                )
+
+                (br $loop_j)
+                )
+            )
+
+            (call $newline)
+
+            (local.set $i
+                (i32.add (local.get $i) (i32.const 1))
+            )
+
+            (br $loop_i)
+            )
+        )
+        (call $end_drawing)
+    )
+
+
+   (func $main
         (local $i i32)
         (local $borne i32)
         (local $iterlast i32)
+        (local $time i32)
+
+        i32.const 1
+        local.set $time
 
         call $read_int
         global.set $largeur
@@ -525,7 +588,8 @@
         call $read_int
         global.set $longueur
 
-        call $config_not_null
+        (call $config_not_null)
+        (call $open_window)
 
         (if 
             (then call $init_with_config) 
@@ -547,17 +611,25 @@
                 ;; (i32.eq (local.get $i) (i32.const 5))
                 (i32.eq (local.get $i)  (local.get $borne))
                 br_if $stop 
-
                 ;; ordre pour bien voir tous les affichages
                 local.get $i 
                 (i32.ge_s (local.get $i)  (local.get $iterlast))
                    (if (then
-                        (local.get $i)  
-                        (call $print_separateur)
-                        (call $print_grid)
+                        ;; (local.get $i)  
+                        ;; (call $print_separateur)
+                        ;; (call $print_grid)
+                        
+                        (call $is_close)
+                        (if (then
+                            (call $print_grid_inter)                           
+                            )
+                        )
                         )
                     )
-               
+
+                local.get $time
+                call $sleep
+                               
                 call $step
 
                 (i32.add (local.get $i) (i32.const 1))
