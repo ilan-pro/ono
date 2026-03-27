@@ -15,8 +15,9 @@
     (func $get_width (import "ono" "get_width") (result i32))
     (func $get_length (import "ono" "get_length") (result i32))
     (func $get_alive (import "ono" "get_alive") (param i32) (param i32) (result i32))
-    (func $read_int (import "ono" "read_int") (result i32))
-    
+    (func $read_int (import "ono" "read_int") (param i32) (result i32))
+
+    (func $get_option_graphic (import "ono" "get_option_graphic") (result i32))    
     (func $open_window (import "ono" "open_window"))
     (func $close_window (import "ono" "close_window"))
     (func $is_close (import "ono" "is_close") (result i32))
@@ -25,6 +26,7 @@
     (func $cell_print_inter (import "ono" "cell_print_inter") (param i32) (param i32) (param i32))
     (func $clear_background (import "ono" "clear_background"))
     (func $sleep (import "ono" "sleep") (param i32))
+    (func $print_iteration_graphic (import "ono" "print_iteration_graphic") (param i32) (param i32))
 
     (global $largeur (mut i32) (i32.const 4))
     (global $longueur (mut i32) (i32.const 4))
@@ -522,11 +524,14 @@
     )
 
     (func $print_grid_inter 
+        (param $iter i32)
         (local $i i32) 
         (local $j i32)
 
         (call $begin_drawing)
         (call $clear_background)
+
+
 
         (local.set $i (i32.const 0))
 
@@ -552,6 +557,7 @@
                     (local.get $i)
                     (local.get $j)
                 )
+
                 (local.set $j
                     (i32.add (local.get $j) (i32.const 1))
                 )
@@ -569,8 +575,11 @@
             (br $loop_i)
             )
         )
+
+        (call $print_iteration_graphic (local.get $iter) (call $get_steps))
+
         (call $end_drawing)
-    )
+    )   
 
 
    (func $main
@@ -578,23 +587,30 @@
         (local $borne i32)
         (local $iterlast i32)
         (local $time i32)
+        (local $option_graph i32)
 
         i32.const 1
         local.set $time
-
-        call $read_int
-        global.set $largeur
-
-        call $read_int
-        global.set $longueur
-
+        
         (call $config_not_null)
-        (call $open_window)
-
         (if 
             (then call $init_with_config) 
-            (else call $init)  
+            (else 
+                call $init
+                i32.const 0    
+                call $read_int 
+                global.set $largeur
+                
+                i32.const 1
+                call $read_int 
+                global.set $longueur
+            )  
         )
+
+        (call $get_option_graphic)
+        local.tee $option_graph 
+        (if (then call $open_window))
+
 
         i32.const 0
         local.set $i
@@ -608,24 +624,31 @@
 
         (block $stop
             (loop $loop
-                ;; (i32.eq (local.get $i) (i32.const 5))
                 (i32.eq (local.get $i)  (local.get $borne))
                 br_if $stop 
                 ;; ordre pour bien voir tous les affichages
                 local.get $i 
                 (i32.ge_s (local.get $i)  (local.get $iterlast))
-                   (if (then
-                        ;; (local.get $i)  
-                        ;; (call $print_separateur)
-                        ;; (call $print_grid)
-                        
-                        (call $is_close)
-                        (if (then
-                            (call $print_grid_inter)                           
+                (if 
+                    (then
+                        local.get $option_graph 
+                        (if 
+                            (then 
+                                (call $is_close)
+                                (if (then 
+                                        (i32.add (local.get $i) (i32.const 1))
+                                        (call $print_grid_inter)
+                                    )
+                                )
+                            )  
+                            (else 
+                                (local.get $i)  
+                                (call $print_separateur)
+                                (call $print_grid) 
                             )
                         )
-                        )
                     )
+                )
 
                 local.get $time
                 call $sleep

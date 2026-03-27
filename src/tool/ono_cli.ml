@@ -102,7 +102,7 @@ let seed =
 (* Définition de l'option seed pour la CLI *)
 
 let steps =
-  let doc = "Step pour limiter le nbr d'itération TODO" in
+  let doc = "Step pour limiter le nbr d'itération" in
   Arg.(value & opt (some int) None & info [ "steps" ] ~doc ~docv:"INT")
 
 let json_config =
@@ -112,11 +112,14 @@ let json_config =
     & opt (some existing_file_json) None
     & info [ "config" ] ~doc ~docv:"CONFIG")
 
-
 let last =
   let doc = "Affiche les n dernieres itérations." in
-  Arg.(
-    value
-    & opt (some int) None 
-    & info [ "last" ] ~doc ~docv:"INT"
-  )
+  Arg.(value & opt (some int) None & info [ "last" ] ~doc ~docv:"INT")
+
+(* nous n'avons pas le droit de mettre un nom car il est obligatoire et sa position est explicite dans la cli *)
+(* les noms sont utiles quand c'est optionnel car nous pouvons les mettre dans n'importe quel ordre *)
+let option_graphic =
+  let doc =
+    "Booléan pour dire si oui ou non, nous voulons l'affichage graphique"
+  in
+  Arg.(required & pos 1 (some int) None (info [] ~doc ~docv:"INT"))

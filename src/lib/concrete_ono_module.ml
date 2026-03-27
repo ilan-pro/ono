@@ -58,23 +58,17 @@ let cell_print (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   else Buffer.add_string buffer "x  ";
   Ok ()
 
-
-
 let steps_arg = ref 0
 let set_steps_arg n = steps_arg := n
-
 
 let get_steps () : (Kdo.Concrete.I32.t, _) Result.t =
   Ok (Kdo.Concrete.I32.of_int !steps_arg)
 
-
-  
 let last_arg = ref 0
 let set_last_arg n = last_arg := n
 
-
 let get_last () : (Kdo.Concrete.I32.t, _) Result.t =
-  Ok (Kdo.Concrete.I32.of_int !last_arg)  
+  Ok (Kdo.Concrete.I32.of_int !last_arg)
 
 let config_not_null () : (Kdo.Concrete.I32.t, _) Result.t =
   let value = if !global_config <> None then 1 else 0 in
@@ -103,53 +97,72 @@ let get_alive (i : Kdo.Concrete.I32.t) (j : Kdo.Concrete.I32.t) :
     if List.exists (fun (x, y) -> x = i && y = j) alive then 1 else 0
   in
   Ok (Kdo.Concrete.I32.of_int value)
-let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
-  print_string "Entrez une valeur : ";
+
+let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
+  let res = Kdo.Concrete.I32.to_int forRow in
+  if res > 0 then print_string "Entrez une longueur : "
+  else print_string "Entrez une largeur : ";
   flush stdout;
   let n = Scanf.scanf " %d" (fun x -> x) in
   Ok (Kdo.Concrete.I32.of_int n)
 
-  open Raylib
-  (* open Tsdl *)
-  let open_window () : (unit,_) Result.t =
-     init_window 800 800 "Game of life";
-    Ok()
+open Raylib
 
-  
-  let close_window () : (unit,_) Result.t =
-    close_window();
-    Ok() 
+(* open Tsdl *)
+let open_window () : (unit, _) Result.t =
+  init_window 800 800 "Game of life";
+  Ok ()
 
-  let is_close () : (Kdo.Concrete.I32.t,_) Result.t =
-    let b = if window_should_close() then 0 else 1 in
-    Ok(Kdo.Concrete.I32.of_int b)
+let close_window () : (unit, _) Result.t =
+  close_window ();
+  Ok ()
 
-  let begin_drawing () : (unit,_) Result.t =
-    begin_drawing();
-    Ok()
-  
-  let end_drawing () : (unit,_) Result.t =
-    end_drawing();
-    Ok() 
-  
-  let clear_background () : (unit,_) Result.t =
-    clear_background Color.raywhite;
-    Ok()
+let is_close () : (Kdo.Concrete.I32.t, _) Result.t =
+  let b = if window_should_close () then 0 else 1 in
+  Ok (Kdo.Concrete.I32.of_int b)
 
-  let cell_print_inter (is_alive : Kdo.Concrete.I32.t) (row : Kdo.Concrete.I32.t) (column : Kdo.Concrete.I32.t) : (unit, _) Result.t =
-      let size = Vector2.create 200.0 200.0 in
-      let x = float_of_int (Kdo.Concrete.I32.to_int column * 200) in
-      let y = float_of_int (Kdo.Concrete.I32.to_int row * 200) in
-      let pos = Vector2.create x y in
-      if is_alive <> Kdo.Concrete.I32.of_int 0 then (
-        draw_rectangle_v pos size Color.black;
-        draw_rectangle_lines (Kdo.Concrete.I32.to_int column * 200) (Kdo.Concrete.I32.to_int row * 200) 200 200 Color.blue
-      )
-      else (
-        draw_rectangle_v pos size Color.red;
-        draw_rectangle_lines (Kdo.Concrete.I32.to_int column * 200) (Kdo.Concrete.I32.to_int row * 200) 200 200 Color.blue
-      );
-    Ok ()
+let begin_drawing () : (unit, _) Result.t =
+  begin_drawing ();
+  Ok ()
+
+let end_drawing () : (unit, _) Result.t =
+  end_drawing ();
+  Ok ()
+
+let clear_background () : (unit, _) Result.t =
+  clear_background Color.raywhite;
+  Ok ()
+
+let cell_print_inter (is_alive : Kdo.Concrete.I32.t) (row : Kdo.Concrete.I32.t)
+    (column : Kdo.Concrete.I32.t) : (unit, _) Result.t =
+  let size = Vector2.create 200.0 200.0 in
+  let x = float_of_int (Kdo.Concrete.I32.to_int column * 200) in
+  let y = float_of_int (Kdo.Concrete.I32.to_int row * 200) in
+  let pos = Vector2.create x y in
+  if is_alive <> Kdo.Concrete.I32.of_int 0 then (
+    draw_rectangle_v pos size Color.black;
+    draw_rectangle_lines
+      (Kdo.Concrete.I32.to_int column * 200)
+      (Kdo.Concrete.I32.to_int row * 200)
+      200 200 Color.blue)
+  else (
+    draw_rectangle_v pos size Color.red;
+    draw_rectangle_lines
+      (Kdo.Concrete.I32.to_int column * 200)
+      (Kdo.Concrete.I32.to_int row * 200)
+      200 200 Color.blue);
+  Ok ()
+
+(* quand la valeur est à 0, c'est le terminal qui est affiché et à 1 c'est la fenêtre *)
+let option_graphic = ref 0
+let set_option_graphic n = option_graphic := n
+
+let get_option_graphic () : (Kdo.Concrete.I32.t, _) Result.t =
+  Ok (Kdo.Concrete.I32.of_int !option_graphic)
+
+let print_iteration_graphic (iter : Kdo.Concrete.I32.t) (max_iter : Kdo.Concrete.I32.t) : (unit, _) Result.t =
+  let text = Printf.sprintf "%d/%d" (Kdo.Concrete.I32.to_int iter) (Kdo.Concrete.I32.to_int max_iter) in
+  Ok (draw_text text 0 0 10 Color.white)
 
 let m =
   let open Kdo.Concrete.Extern_func in
@@ -178,16 +191,21 @@ let m =
       ("get_length", Extern_func (unit ^->. i32, get_length));
       ("get_alive", Extern_func (i32 ^-> i32 ^->. i32, get_alive));
       (* pour la saisie utilisateur *)
-      ("read_int", Extern_func (unit ^->. i32, read_int));
-      (*  *)
-      ("open_window" , Extern_func(unit ^->. unit, open_window));
-      ("close_window" , Extern_func(unit ^->. unit, close_window));
-      ("is_close" , Extern_func(unit ^->. i32, is_close));
-      ("end_drawing" , Extern_func(unit ^->. unit, end_drawing));
-      ("begin_drawing" , Extern_func(unit ^->. unit, begin_drawing));
-      ("clear_background" , Extern_func(unit ^->. unit, clear_background));
-      ("cell_print_inter", Extern_func(i32 ^-> i32 ^-> i32 ^->. unit, cell_print_inter));
-      ]
+      ("read_int", Extern_func (i32 ^->. i32, read_int));
+      (* pour l'option graphique *)
+      ("get_option_graphic", Extern_func (unit ^->. i32, get_option_graphic));
+      (* pour le graphique *)
+      ("open_window", Extern_func (unit ^->. unit, open_window));
+      ("close_window", Extern_func (unit ^->. unit, close_window));
+      ("is_close", Extern_func (unit ^->. i32, is_close));
+      ("end_drawing", Extern_func (unit ^->. unit, end_drawing));
+      ("begin_drawing", Extern_func (unit ^->. unit, begin_drawing));
+      ("clear_background", Extern_func (unit ^->. unit, clear_background));
+      ( "cell_print_inter",
+        Extern_func (i32 ^-> i32 ^-> i32 ^->. unit, cell_print_inter) );
+      ( "print_iteration_graphic",
+        Extern_func (i32 ^-> i32 ^->. unit, print_iteration_graphic) );
+    ]
   in
   {
     Kdo.Extern.Module.functions;

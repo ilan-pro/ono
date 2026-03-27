@@ -12,10 +12,11 @@ let term =
   and+ source_file = source_file
   and+ seed = seed
   and+ json_config = json_config
-  and+ steps = steps 
-  and+ last = last in
+  and+ steps = steps
+  and+ last = last
+  and+ option_graphic = option_graphic in
 
-    (match last with
+  (match last with
   | Some n -> Ono.Concrete_ono_module.set_last_arg n
   | None -> Ono.Concrete_ono_module.set_last_arg 8);
 
@@ -24,6 +25,11 @@ let term =
   (match steps with
   | Some n -> Ono.Concrete_ono_module.set_steps_arg n
   | None -> Ono.Concrete_ono_module.set_steps_arg 8);
+
+  (* pour l'option graphique *)
+  (* comme l'argument est obligatoire (required), le cmdLiner l'a déjà simplifier en int *)
+  if option_graphic > 0 then Ono.Concrete_ono_module.set_option_graphic 1
+  else Ono.Concrete_ono_module.set_option_graphic 0;
 
   (* le fichier json *)
   let json =
