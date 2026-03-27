@@ -30,9 +30,8 @@ let clear_screen () : (unit, _) Result.t =
 
 let random_i32 (n : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
   (* La fonction prend un paramètre n et retourne un nombre aléatoire entre 0 et n-1 *)
-  let max_val : int32 = Obj.magic n in
-  let max_val = Int32.to_int max_val in
-  let max_val = if max_val <= 0 then 1 else max_val in
+  let vall = Kdo.Concrete.I32.to_int n in
+  let max_val = if vall <= 0 then 1 else vall in
   let random_val = Random.int max_val in
   Ok (Kdo.Concrete.I32.of_int random_val)
 
