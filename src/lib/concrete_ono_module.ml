@@ -53,6 +53,11 @@ let sleep (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   Unix.sleep (Kdo.Concrete.I32.to_int x);
   Ok ()
 
+let sleepf (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
+  let res = float_of_int (Kdo.Concrete.I32.to_int x) *. 0.01 in
+  Unix.sleepf res;
+  Ok ()
+
 let cell_print (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   if x <> Kdo.Concrete.I32.of_int 0 then Buffer.add_string buffer "🦊 "
   else Buffer.add_string buffer "x  ";
@@ -298,6 +303,7 @@ let m =
       ("clear_screen", Extern_func (unit ^->. unit, clear_screen));
       ("print_separateur", Extern_func (i32 ^->. unit, print_separateur));
       ("sleep", Extern_func (i32 ^->. unit, sleep));
+      ("sleepf", Extern_func (i32 ^->. unit, sleepf));
       (* l'affichage logique *)
       ("cell_print", Extern_func (i32 ^->. unit, cell_print));
       (* pour le debug *)

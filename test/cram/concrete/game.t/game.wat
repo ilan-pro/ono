@@ -26,6 +26,7 @@
     (func $cell_print_inter (import "ono" "cell_print_inter") (param i32) (param i32) (param i32))
     (func $clear_background (import "ono" "clear_background"))
     (func $sleep (import "ono" "sleep") (param i32))
+    (func $sleepf (import "ono" "sleepf") (param i32))
 
     (global $largeur (mut i32) (i32.const 4))
     (global $longueur (mut i32) (i32.const 4))
@@ -586,7 +587,7 @@
         (local $frame i32)
 
 
-        i32.const 1
+        i32.const 9
         local.set $time
 
         call $read_int
@@ -634,22 +635,22 @@
                         )
                     )
 
-                ;; local.get $time
-                ;; call $sleep
+                local.get $time
+                call $sleepf
                                
-                ;; call $step
-
-            local.get $frame
-            i32.const 1
-            i32.add
-            local.set $frame
-
-            local.get $frame
-            i32.const 50
-            i32.ge_u
-            (if
-            (then
                 call $step
+
+            ;; local.get $frame
+            ;; i32.const 1
+            ;; i32.add
+            ;; local.set $frame
+
+            ;; local.get $frame
+            ;; i32.const 50
+            ;; i32.ge_u
+            ;; (if
+            ;; (then
+            ;;     call $step
 
                 
                 local.get $i
@@ -658,10 +659,10 @@
                 local.set $i
 
                 
-                i32.const 0
-                local.set $frame
-            )
-            )
+            ;;     i32.const 0
+            ;;     local.set $frame
+            ;; )
+            ;; )
 
                 br $loop
             )
