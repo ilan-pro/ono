@@ -3,6 +3,7 @@
     (func $clear_screen (import "ono" "clear_screen"))
     (func $newline (import "ono" "newline"))
     (func $cell_print (import "ono" "cell_print") (param i32))
+    (func $handle_camera_input (import "ono" "handle_camera_input") (param i32) (param i32))
     (func $print_i32 (import "ono" "print_i32") (param i32))
     (func $print_i32_custom (import "ono" "print_i32_custom") (param i32) (param i32))
     (func $random_i32 (import "ono" "random_i32") (param i32) (result i32))
@@ -369,7 +370,7 @@
         i32.add
         i32.const 4
         i32.mul
-        i32.const 2000  ;; offset du buffer temporaire
+        i32.const 100000  ;; offset du buffer temporaire
         i32.add
         local.get $v
         i32.store
@@ -401,7 +402,7 @@
 
                 ;; val = memory[2000 + addr]
                 local.get $addr
-                i32.const 2000
+                i32.const 100000
                 i32.add
                 i32.load
                 local.set $val
@@ -525,6 +526,10 @@
         (local $i i32) 
         (local $j i32)
 
+        global.get $largeur
+        global.get $longueur
+        call $handle_camera_input
+
         (call $begin_drawing)
         (call $clear_background)
 
@@ -578,6 +583,8 @@
         (local $borne i32)
         (local $iterlast i32)
         (local $time i32)
+        (local $frame i32)
+
 
         i32.const 1
         local.set $time
@@ -627,13 +634,34 @@
                         )
                     )
 
-                local.get $time
-                call $sleep
+                ;; local.get $time
+                ;; call $sleep
                                
+                ;; call $step
+
+            local.get $frame
+            i32.const 1
+            i32.add
+            local.set $frame
+
+            local.get $frame
+            i32.const 50
+            i32.ge_u
+            (if
+            (then
                 call $step
 
-                (i32.add (local.get $i) (i32.const 1))
+                
+                local.get $i
+                i32.const 1
+                i32.add
                 local.set $i
+
+                
+                i32.const 0
+                local.set $frame
+            )
+            )
 
                 br $loop
             )

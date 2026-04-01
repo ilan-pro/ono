@@ -111,44 +111,176 @@ let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
 
   open Raylib
   (* open Tsdl *)
-  let open_window () : (unit,_) Result.t =
-     init_window 800 800 "Game of life";
-    Ok()
+
+  type camera =
+  { mutable offset_x : int
+  ; mutable offset_y : int
+  ; mutable cell_size : int
+  }
+
+  let camera =
+  { offset_x = 0
+  ; offset_y = 0
+  ; cell_size = 20
+  }
+  
+  (* fonction de raylib qui premet de récup la taille de la fenetre*)
+  let window_width = 800
+  let window_height = 800
 
   
-  let close_window () : (unit,_) Result.t =
-    close_window();
-    Ok() 
+  
+  
+  let visible_cols window_width camera =
+    let size = max 1 camera.cell_size in
+    (window_width + size - 1) / size
+
+  let visible_rows window_height camera =
+    let size = max 1 camera.cell_size in
+    (window_height + size - 1) / size
+
+  let init_camera ~grid_width ~grid_height =
+    let size_x = window_width / max 1 grid_width in
+    let size_y = window_height / max 1 grid_height in
+    camera.cell_size <- max 1 (min size_x size_y);
+    camera.offset_x <- 0;
+    camera.offset_y <- 0
 
   let is_close () : (Kdo.Concrete.I32.t,_) Result.t =
     let b = if window_should_close() then 0 else 1 in
     Ok(Kdo.Concrete.I32.of_int b)
 
-  let begin_drawing () : (unit,_) Result.t =
-    begin_drawing();
-    Ok()
+  let open_window () : (unit, _) Result.t =
+    Raylib.init_window window_width window_height "Game of life";
+    Raylib.set_target_fps 60;
+    Ok ()
+
+  let close_window () : (unit, _) Result.t =
+    Raylib.close_window ();
+    Ok ()
+
+  let begin_drawing () : (unit, _) Result.t =
+    Raylib.begin_drawing ();
+    Ok ()
+
+  let end_drawing () : (unit, _) Result.t =
+    Raylib.end_drawing ();
+    Ok ()
+
+  let clear_background () : (unit, _) Result.t =
+    Raylib.clear_background Raylib.Color.raywhite;
+    Ok ()
+    
+  let clamp_camera ~grid_width ~grid_height =
+    let cols = visible_cols window_width camera in
+    let rows = visible_rows window_height camera in
+    let max_offset_x = max 0 (grid_width - cols) in
+    let max_offset_y = max 0 (grid_height - rows) in
+    camera.offset_x <- max 0 (min camera.offset_x max_offset_x);
+    camera.offset_y <- max 0 (min camera.offset_y max_offset_y)
+
   
-  let end_drawing () : (unit,_) Result.t =
-    end_drawing();
-    Ok() 
+  let fit_cell_size ~grid_width ~grid_height =
+    let size_x = window_width / max 1 grid_width in
+    let size_y = window_height / max 1 grid_height in
+    max 1 (min size_x size_y)
   
-  let clear_background () : (unit,_) Result.t =
-    clear_background Color.raywhite;
-    Ok()
+  let max_cell_size = 200
+
+  let handle_camera_input ~grid_width ~grid_height =
+
+    if Raylib.is_key_down Raylib.Key.Right then
+      camera.offset_x <- camera.offset_x + 1;
+
+    if Raylib.is_key_down Raylib.Key.Left then
+      camera.offset_x <- camera.offset_x - 1;
+
+    if Raylib.is_key_down Raylib.Key.Down then
+      camera.offset_y <- camera.offset_y + 1;
+
+    if Raylib.is_key_down Raylib.Key.Up then
+      camera.offset_y <- camera.offset_y - 1;
+
+    if Raylib.is_key_pressed Raylib.Key.P then begin
+      
+      let cols_before = window_width / camera.cell_size in
+      let rows_before = window_height / camera.cell_size in
+
+      let center_x = camera.offset_x + cols_before / 2 in
+      let center_y = camera.offset_y + rows_before / 2 in
+
+      camera.cell_size <- min max_cell_size (camera.cell_size + 2);
+
+      let cols_after = window_width / camera.cell_size in
+      let rows_after = window_height / camera.cell_size in
+
+      camera.offset_x <- center_x - cols_after / 2;
+      camera.offset_y <- center_y - rows_after / 2;
+
+      clamp_camera ~grid_width ~grid_height
+    end;
+
+    if Raylib.is_key_pressed Raylib.Key.O then begin
+
+      let cols_before = window_width / camera.cell_size in
+      let rows_before = window_height / camera.cell_size in
+
+      let center_x = camera.offset_x + cols_before / 2 in
+      let center_y = camera.offset_y + rows_before / 2 in
+
+      let min_cell_size = fit_cell_size ~grid_width ~grid_height in
+      camera.cell_size <- max min_cell_size (camera.cell_size - 2);
+
+      let cols_after = window_width / camera.cell_size in
+      let rows_after = window_height / camera.cell_size in
+
+      camera.offset_x <- center_x - cols_after / 2;
+      camera.offset_y <- center_y - rows_after / 2;
+
+      clamp_camera ~grid_width ~grid_height
+    end;
+
+    clamp_camera ~grid_width ~grid_height
+
+  let camera_initialized = ref false
+
+  let handle_camera_input_ext(grid_width : Kdo.Concrete.I32.t)(grid_height : Kdo.Concrete.I32.t): (unit, _) Result.t =
+    let grid_width = Kdo.Concrete.I32.to_int grid_width in
+    let grid_height = Kdo.Concrete.I32.to_int grid_height in
+
+    if not !camera_initialized then begin
+      init_camera ~grid_width ~grid_height;
+      camera_initialized := true
+    end;
+
+    handle_camera_input ~grid_width ~grid_height;
+    Ok ()
 
   let cell_print_inter (is_alive : Kdo.Concrete.I32.t) (row : Kdo.Concrete.I32.t) (column : Kdo.Concrete.I32.t) : (unit, _) Result.t =
-      let size = Vector2.create 200.0 200.0 in
-      let x = float_of_int (Kdo.Concrete.I32.to_int column * 200) in
-      let y = float_of_int (Kdo.Concrete.I32.to_int row * 200) in
-      let pos = Vector2.create x y in
-      if is_alive <> Kdo.Concrete.I32.of_int 0 then (
-        draw_rectangle_v pos size Color.black;
-        draw_rectangle_lines (Kdo.Concrete.I32.to_int column * 200) (Kdo.Concrete.I32.to_int row * 200) 200 200 Color.blue
-      )
-      else (
-        draw_rectangle_v pos size Color.red;
-        draw_rectangle_lines (Kdo.Concrete.I32.to_int column * 200) (Kdo.Concrete.I32.to_int row * 200) 200 200 Color.blue
-      );
+    let row = Kdo.Concrete.I32.to_int row in
+    let column = Kdo.Concrete.I32.to_int column in
+
+    let cols = visible_cols window_width camera in
+    let rows = visible_rows window_height camera in
+
+    
+    let screen_x = column - camera.offset_x in
+    let screen_y = row - camera.offset_y in
+
+    
+    if screen_x >= 0 && screen_x < cols && screen_y >= 0 && screen_y < rows then begin
+      let size = max 1 camera.cell_size in
+      let pixel_x = screen_x * size in
+      let pixel_y = screen_y * size in
+
+      if is_alive <> Kdo.Concrete.I32.of_int 0 then
+        draw_rectangle pixel_x pixel_y size size Color.black
+      else
+        draw_rectangle pixel_x pixel_y size size Color.red;
+
+      draw_rectangle_lines pixel_x pixel_y size size Color.blue
+    end;
+
     Ok ()
 
 let m =
@@ -187,6 +319,7 @@ let m =
       ("begin_drawing" , Extern_func(unit ^->. unit, begin_drawing));
       ("clear_background" , Extern_func(unit ^->. unit, clear_background));
       ("cell_print_inter", Extern_func(i32 ^-> i32 ^-> i32 ^->. unit, cell_print_inter));
+      ("handle_camera_input", Extern_func (i32 ^-> i32 ^->. unit, handle_camera_input_ext));
       ]
   in
   {
