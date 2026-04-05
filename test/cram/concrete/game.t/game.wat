@@ -587,7 +587,7 @@
         (local $frame i32)
 
 
-        i32.const 9
+        i32.const 30
         local.set $time
 
         call $read_int
@@ -635,22 +635,22 @@
                         )
                     )
 
-                local.get $time
-                call $sleepf
+                ;; local.get $time
+                ;; call $sleepf
                                
+                ;; call $step
+
+            local.get $frame
+            i32.const 1
+            i32.add
+            local.set $frame
+
+            local.get $frame
+            i32.const 50
+            i32.ge_u
+            (if
+            (then
                 call $step
-
-            ;; local.get $frame
-            ;; i32.const 1
-            ;; i32.add
-            ;; local.set $frame
-
-            ;; local.get $frame
-            ;; i32.const 50
-            ;; i32.ge_u
-            ;; (if
-            ;; (then
-            ;;     call $step
 
                 
                 local.get $i
@@ -659,10 +659,10 @@
                 local.set $i
 
                 
-            ;;     i32.const 0
-            ;;     local.set $frame
-            ;; )
-            ;; )
+                i32.const 0
+                local.set $frame
+            )
+            )
 
                 br $loop
             )

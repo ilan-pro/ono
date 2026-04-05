@@ -145,8 +145,8 @@ let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
     (window_height + size - 1) / size
 
   let init_camera ~grid_width ~grid_height =
-    let size_x = window_width / max 1 grid_width in
-    let size_y = window_height / max 1 grid_height in
+    let size_x = (window_width + grid_width - 1)  / max 1 grid_width in
+    let size_y = (window_height + grid_height - 1) / max 1 grid_height in
     camera.cell_size <- max 1 (min size_x size_y);
     camera.offset_x <- 0;
     camera.offset_y <- 0
@@ -186,8 +186,8 @@ let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
 
   
   let fit_cell_size ~grid_width ~grid_height =
-    let size_x = window_width / max 1 grid_width in
-    let size_y = window_height / max 1 grid_height in
+    let size_x = (window_width + grid_width - 1) / max 1 grid_width in
+    let size_y = (window_height + grid_height - 1) / max 1 grid_height in
     max 1 (min size_x size_y)
   
   let max_cell_size = 200
