@@ -636,6 +636,7 @@
                 ;; ordre pour bien voir tous les affichages
                 local.get $i 
                 (i32.ge_s (local.get $i)  (local.get $iterlast))
+
                 (if 
                     (then
                         local.get $option_graph 
@@ -658,7 +659,8 @@
                 )
 
                 (call $config_not_null)
-                if (then 
+                (if 
+                    (then 
                         local.get $time
                         call $sleep
                                     
@@ -693,6 +695,8 @@
                             )
                         )
                     )
+                )
+
                 br $loop
             )
         )
