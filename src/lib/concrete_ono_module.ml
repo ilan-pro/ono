@@ -120,11 +120,16 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
   ; cell_size = 20
   }
   
-  (* fonction de raylib qui premet de récup la taille de la fenetre*)
-  let window_width = 800
-  let window_height = 800
+  let open_window () : (unit, _) Result.t =
+    Raylib.init_window 800 800 "Game of life";
+    Raylib.set_target_fps 60;
+    Ok ()
 
   
+    (* fonction de raylib qui premet de récup la taille de la fenetre*)
+  let window_width () = Raylib.get_screen_width ()
+  let window_height () = Raylib.get_screen_height ()
+
   
   
   let visible_cols window_width camera =
@@ -136,8 +141,8 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
     (window_height + size - 1) / size
 
   let init_camera ~grid_width ~grid_height =
-    let size_x = (window_width + grid_width - 1)  / max 1 grid_width in
-    let size_y = (window_height + grid_height - 1) / max 1 grid_height in
+    let size_x = (window_width () + grid_width - 1) / max 1 grid_width in
+    let size_y = (window_height () + grid_height - 1) / max 1 grid_height in
     camera.cell_size <- max 1 (min size_x size_y);
     camera.offset_x <- 0;
     camera.offset_y <- 0
@@ -146,10 +151,6 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
     let b = if window_should_close() then 0 else 1 in
     Ok(Kdo.Concrete.I32.of_int b)
 
-  let open_window () : (unit, _) Result.t =
-    Raylib.init_window window_width window_height "Game of life";
-    Raylib.set_target_fps 60;
-    Ok ()
 
   let close_window () : (unit, _) Result.t =
     Raylib.close_window ();
@@ -168,8 +169,8 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
     Ok ()
     
   let clamp_camera ~grid_width ~grid_height =
-    let cols = visible_cols window_width camera in
-    let rows = visible_rows window_height camera in
+    let cols = visible_cols (window_width()) camera in
+    let rows = visible_rows (window_height()) camera in
     let max_offset_x = max 0 (grid_width - cols) in
     let max_offset_y = max 0 (grid_height - rows) in
     camera.offset_x <- max 0 (min camera.offset_x max_offset_x);
@@ -177,8 +178,8 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
 
   
   let fit_cell_size ~grid_width ~grid_height =
-    let size_x = (window_width + grid_width - 1) / max 1 grid_width in
-    let size_y = (window_height + grid_height - 1) / max 1 grid_height in
+    let size_x = (window_width () + grid_width - 1) / max 1 grid_width in
+    let size_y = (window_height () + grid_height - 1) / max 1 grid_height in
     max 1 (min size_x size_y)
   
   let max_cell_size = 200
@@ -197,18 +198,18 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
     if Raylib.is_key_down Raylib.Key.Up then
       camera.offset_y <- camera.offset_y - 1;
 
-    if Raylib.is_key_pressed Raylib.Key.P then begin
+    if Raylib.is_key_down Raylib.Key.P then begin
       
-      let cols_before = window_width / camera.cell_size in
-      let rows_before = window_height / camera.cell_size in
+      let cols_before = window_width() / camera.cell_size in
+      let rows_before = window_height() / camera.cell_size in
 
       let center_x = camera.offset_x + cols_before / 2 in
       let center_y = camera.offset_y + rows_before / 2 in
 
       camera.cell_size <- min max_cell_size (camera.cell_size + 2);
 
-      let cols_after = window_width / camera.cell_size in
-      let rows_after = window_height / camera.cell_size in
+      let cols_after = window_width() / camera.cell_size in
+      let rows_after = window_height() / camera.cell_size in
 
       camera.offset_x <- center_x - cols_after / 2;
       camera.offset_y <- center_y - rows_after / 2;
@@ -216,10 +217,10 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
       clamp_camera ~grid_width ~grid_height
     end;
 
-    if Raylib.is_key_pressed Raylib.Key.O then begin
+    if Raylib.is_key_down Raylib.Key.O then begin
 
-      let cols_before = window_width / camera.cell_size in
-      let rows_before = window_height / camera.cell_size in
+      let cols_before = window_width() / camera.cell_size in
+      let rows_before = window_height() / camera.cell_size in
 
       let center_x = camera.offset_x + cols_before / 2 in
       let center_y = camera.offset_y + rows_before / 2 in
@@ -227,8 +228,8 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
       let min_cell_size = fit_cell_size ~grid_width ~grid_height in
       camera.cell_size <- max min_cell_size (camera.cell_size - 2);
 
-      let cols_after = window_width / camera.cell_size in
-      let rows_after = window_height / camera.cell_size in
+      let cols_after = window_width() / camera.cell_size in
+      let rows_after = window_height() / camera.cell_size in
 
       camera.offset_x <- center_x - cols_after / 2;
       camera.offset_y <- center_y - rows_after / 2;
@@ -256,8 +257,8 @@ let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
     let row = Kdo.Concrete.I32.to_int row in
     let column = Kdo.Concrete.I32.to_int column in
 
-    let cols = visible_cols window_width camera in
-    let rows = visible_rows window_height camera in
+    let cols = visible_cols (window_width ()) camera in
+    let rows = visible_rows (window_height ()) camera in
 
     
     let screen_x = column - camera.offset_x in

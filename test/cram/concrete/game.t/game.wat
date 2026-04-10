@@ -596,7 +596,7 @@
         (local $frame i32)
 
 
-        i32.const 30
+        i32.const 1
         local.set $time
         
         (call $config_not_null)
@@ -657,20 +657,11 @@
                         )
                     )
                 )
-
-                (call $config_not_null)
+                
+                ;; (call $config_not_null)
+                (local.get $option_graph)
                 (if 
                     (then 
-                        local.get $time
-                        call $sleep
-                                    
-                        call $step
-                        local.get $i
-                        i32.const 1
-                        i32.add
-                        local.set $i
-                    )
-                    (else
                         local.get $frame
                         i32.const 1
                         i32.add
@@ -682,18 +673,26 @@
                         (if
                             (then
                                 call $step
-
                                 
                                 local.get $i
                                 i32.const 1
                                 i32.add
-                                local.set $i
-
                                 
+                                local.set $i 
                                 i32.const 0
                                 local.set $frame
                             )
                         )
+                    )
+                    (else
+                        local.get $time
+                        call $sleep
+                                    
+                        call $step
+                        local.get $i
+                        i32.const 1
+                        i32.add
+                        local.set $i
                     )
                 )
 
