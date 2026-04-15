@@ -97,13 +97,16 @@ let get_alive (i : Kdo.Concrete.I32.t) (j : Kdo.Concrete.I32.t) :
   in
   Ok (Kdo.Concrete.I32.of_int value)
 
-let read_int (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
+let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
+  let n = Scanf.scanf " %d" (fun x -> x) in
+  Ok (Kdo.Concrete.I32.of_int n)
+
+let dimension (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
   let res = Kdo.Concrete.I32.to_int forRow in
   if res > 0 then print_string "Entrez une longueur : "
   else print_string "Entrez une largeur : ";
   flush stdout;
-  let n = Scanf.scanf " %d" (fun x -> x) in
-  Ok (Kdo.Concrete.I32.of_int n)
+  read_int()
 
   open Raylib
   (* open Tsdl *)
@@ -318,7 +321,7 @@ let m =
       ("get_length", Extern_func (unit ^->. i32, get_length));
       ("get_alive", Extern_func (i32 ^-> i32 ^->. i32, get_alive));
       (* pour la saisie utilisateur *)
-      ("read_int", Extern_func (i32 ^->. i32, read_int));
+      ("dimension", Extern_func (i32 ^->. i32, dimension));
       (* pour l'option graphique *)
       ("get_option_graphic", Extern_func (unit ^->. i32, get_option_graphic));
       (* pour le graphique *)

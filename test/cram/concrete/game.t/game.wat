@@ -16,7 +16,7 @@
     (func $get_width (import "ono" "get_width") (result i32))
     (func $get_length (import "ono" "get_length") (result i32))
     (func $get_alive (import "ono" "get_alive") (param i32) (param i32) (result i32))
-    (func $read_int (import "ono" "read_int") (param i32) (result i32))
+    (func $dimension (import "ono" "dimension") (param i32) (result i32))
 
     (func $get_option_graphic (import "ono" "get_option_graphic") (result i32))    
     (func $open_window (import "ono" "open_window"))
@@ -605,11 +605,11 @@
             (else 
                 call $init
                 i32.const 0    
-                call $read_int 
+                call $dimension 
                 global.set $largeur
                 
                 i32.const 1
-                call $read_int 
+                call $dimension 
                 global.set $longueur
             )  
         )

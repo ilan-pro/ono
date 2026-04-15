@@ -2,6 +2,27 @@
 
 ## [unreleased]
 
+## [0.5]
+
+### Fixed
+### Changed
+### Removed
+
+## Added
+
+- Code du polynome pour la partie symbolique
+
+## [0.4] - 2026-04-15
+
+## Added
+
+- Initialisation de l'interface graphique avec RayLib 
+- Ajout de l'itération graphique + option choix graphique terminal
+- Gestion caméra graphique (zoom/dézoom)
+- Gestion des boutons pour l'itération en version graphique
+
+## [0.3] - 2026-03-25
+
 ### Added 
 
 - Possibilité pour l'utilisateur de choisir la dimension de la fenêtre de jeu  
@@ -9,11 +30,7 @@
 - Pouvoir lancer n étapes du jeu de la vie ainsi qu'afficher les n dernière de manière formater selon les standard du cahier de charge
 - Création de cram test pour tester les nouvelles fonctionnalités
 
-### Fixed
-### Changed
-### Removed
-
-## [0.2] - 2025-03-02
+## [0.2] - 2026-03-02
 
 ### Added
 
