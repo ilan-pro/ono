@@ -18,11 +18,10 @@ let term =
 
   (match last with
   | Some n -> Ono.Concrete_ono_module.set_last_arg n
-  | None -> 
-    match steps with
-    | Some n -> Ono.Concrete_ono_module.set_last_arg n
-    | None -> Ono.Concrete_ono_module.set_last_arg 8
-    );
+  | None -> (
+      match steps with
+      | Some n -> Ono.Concrete_ono_module.set_last_arg n
+      | None -> Ono.Concrete_ono_module.set_last_arg 8));
 
   (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
