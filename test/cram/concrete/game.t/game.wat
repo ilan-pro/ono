@@ -43,7 +43,6 @@
         i32.mul
         (local.set $size)
         (local.set $ptr (i32.const 0))
-        
        
 
         (block $remplissage ;; on la remplit (TODO mette les valeurs aléatoire via random_I32)
@@ -425,13 +424,12 @@
         )
     )
 
-    ;; FONCTION STEP - Coeur du Game of Life
     ;; Implémente les règles du Game of Life avec double buffer
     ;; - Phase 1 : Calcule le nouvel état dans buffer temporaire
     ;; - Phase 2 : Recopie le buffer temporaire vers grille principale
     (func $step 
-        (local $i i32)    ;; Indice de ligne (0-19)
-        (local $j i32)    ;; Indice de colonne (0-19)
+        (local $i i32)   
+        (local $j i32)    
         (local $n i32)    ;; Nombre de voisins vivants
         (local $v i32)    ;; Nouvel état de la cellule
 
