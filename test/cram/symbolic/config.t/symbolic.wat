@@ -2,8 +2,8 @@
     (func $i32_symbol (import "ono" "i32_symbol") (result i32))
     (func $print_i32 (import "ono" "print_i32") (param i32))
     
-    (global $largeur (mut i32) (i32.const 3))
-    (global $longueur (mut i32) (i32.const 3))
+    (global $largeur (mut i32) (i32.const 6))
+    (global $longueur (mut i32) (i32.const 6))
     (memory 10)
 
     (func $init_mem 
@@ -94,6 +94,7 @@
 
     (func $get_2d (param $i i32) (param $j i32) (result i32)
         ;; on vérifie avant si on est pas hors limite
+        (local $tmp_x i32)
         local.get $j ;; numéro de la colonne 
         i32.const 0
         i32.lt_s ;; j<0
@@ -315,25 +316,51 @@
                         local.get $v
                         i32.const 1
                         i32.eq
-                        (if (result i32)
+                     
                             ;; CELLULE VIVANTE : Survit avec 2 ou 3 voisins
-                            (then
-                                local.get $n
-                                i32.const 2
-                                i32.eq
-                                local.get $n
-                                i32.const 3
-                                i32.eq
-                                i32.or
-                            )
+                        
+                        local.get $n
+                        i32.const 2
+                        i32.eq
+                        local.get $n
+                        i32.const 3
+                        i32.eq
+                        i32.or
+                        i32.and
+                            
                             ;; CELLULE MORTE : Naît avec exactement 3 voisins
-                            (else
-                                local.get $n
-                                i32.const 3
-                                i32.eq
-                            )
-                        )
+                         
+                        local.get $v
+                        i32.eqz
+
+                        local.get $n
+                        i32.const 3
+                        i32.eq
+
+                        i32.and
+
+                        i32.or
+                       
                         local.set $v
+
+
+                        ;; Version de amenah
+                        ;; local.get $n
+                        ;; i32.const 3
+                        ;; i32.eq
+
+
+                        ;; local.get $v
+                        ;; i32.const 1
+                        ;; i32.eq
+                        
+                        ;; local.get $n
+                        ;; i32.const 2
+                        ;; i32.eq
+                        
+                        ;; i32.and
+                        ;; i32.or
+                        ;; local.set $v
 
                         ;; ÉCRIRE dans le BUFFER TEMPO (adresse 2000+)
                         ;; Évite de modifier la grille pendant la lecture
@@ -374,11 +401,10 @@
 
         
         call $step
-        ;; (unreachable)
         call $count_alive
         (local.set $nb_alive)
         
-        (i32.eq (local.get $nb_alive) (i32.const 3))
+        (i32.eq (local.get $nb_alive) (i32.const 4))
         (if 
             (then unreachable)
         )
