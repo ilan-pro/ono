@@ -26,15 +26,10 @@
                 br_if $remplissage
 
                 ;; call $i32_symbol local.set $tmp_x
-                (local.set $tmp_x (call $i32_symbol))
-                ;;On limite au valeurs (0,1)
-                (if (i32.or
-                        (i32.lt_s (local.get $tmp_x) (i32.const 0))
-                        (i32.gt_s (local.get $tmp_x) (i32.const 1)))
-                    (then
-                        return
-                    )
-                )
+                (call $i32_symbol)
+                (i32.const 2)
+                i32.rem_u
+                local.set $tmp_x
                 ;; n-1
                 (i32.sub (local.get $size) (i32.const 1))
                 local.set $size
@@ -377,8 +372,9 @@
     (func $all
         (local $nb_alive i32)
 
-
+        
         call $step
+        ;; (unreachable)
         call $count_alive
         (local.set $nb_alive)
         
