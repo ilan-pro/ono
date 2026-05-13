@@ -1,5 +1,8 @@
 type extern_func = Kdo.Symbolic.Extern_func.extern_func
 
+let width = ref None
+let length = ref None
+
 let print_i32 (n : Kdo.Symbolic.I32.t) : unit Kdo.Symbolic.Choice.t =
   Logs.app (fun m -> m "%a" Kdo.Symbolic.I32.pp n);
   Kdo.Symbolic.Choice.return ()
@@ -12,42 +15,25 @@ let read_int () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   let n = Scanf.scanf " %d" (fun x -> x) in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int n)
 
+let xxx () : int = 
+  Scanf.scanf " %d" (fun x -> x)
+
 let polynomeA () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  (* let res = Kdo.Symbolic.I32.of_int num_lettre in *)
-  (* if res == 0 then print_string "Rentrez une valeur pour a"
-  else if res == 1 then print_string "Rentrez une valeur pour b"
-  else if res == 2 then print_string "Rentrez une valeur pour c"
-  else print_string "Rentrez une valeur pour d"; *)
   print_string "Rentrez une valeur pour A : ";
   flush stdout;
   read_int ()
 
 let polynomeB () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  (* let res = Kdo.Symbolic.I32.of_int num_lettre in *)
-  (* if res == 0 then print_string "Rentrez une valeur pour a"
-  else if res == 1 then print_string "Rentrez une valeur pour b"
-  else if res == 2 then print_string "Rentrez une valeur pour c"
-  else print_string "Rentrez une valeur pour d"; *)
   print_string "Rentrez une valeur pour B : ";
   flush stdout;
   read_int ()
 
 let polynomeC () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  (* let res = Kdo.Symbolic.I32.of_int num_lettre in *)
-  (* if res == 0 then print_string "Rentrez une valeur pour a"
-  else if res == 1 then print_string "Rentrez une valeur pour b"
-  else if res == 2 then print_string "Rentrez une valeur pour c"
-  else print_string "Rentrez une valeur pour d"; *)
   print_string "Rentrez une valeur pour C: ";
   flush stdout;
   read_int ()
 
 let polynomeD () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  (* let res = Kdo.Symbolic.I32.of_int num_lettre in *)
-  (* if res == 0 then print_string "Rentrez une valeur pour a"
-  else if res == 1 then print_string "Rentrez une valeur pour b"
-  else if res == 2 then print_string "Rentrez une valeur pour c"
-  else print_string "Rentrez une valeur pour d"; *)
   print_string "Rentrez une valeur pour D: ";
   flush stdout;
   read_int ()
@@ -55,6 +41,46 @@ let polynomeD () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
 let debug () : unit Owi.Symbolic_choice.t =
   print_string "jsuis là\n";
   Kdo.Symbolic.Choice.return ()
+
+(* nous allons initialiser la largeur et la longueur en demandant à l'utilisateur puis nous allons set une variable partagé via l'interface 
+`symbolic_config` *)
+
+let init_config_symbolic () : unit Owi.Symbolic_choice.t =
+  print_string "Rentrez une largeur pour la grille : ";
+  flush stdout;
+  let largeur = xxx () in
+  width := Some largeur;
+  
+  print_string "Rentrez une longueur pour la grille : ";
+  flush stdout;
+  let longueur = xxx () in 
+  length := Some longueur;
+
+  (* pour avoir le bon chemin pour y stocker le fichier *)
+  let path = "config/symbolic_config.json" in
+
+  (* écrire dans un fichier txt width et length ou dans un json !! *)
+  let json =
+    `Assoc
+    [
+      ("largeur", `Int largeur);
+      ("longueur", `Int longueur);
+      ]
+    in
+    
+    Yojson.Safe.to_file path json;
+  
+  Kdo.Symbolic.Choice.return ()
+
+let get_width () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
+  match !width with 
+  | None -> Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int 0)
+  | Some x -> Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int x)
+
+let get_length () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
+  match !length with 
+  | None -> Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int 0)
+  | Some x -> Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int x)
 
 let m =
   let open Kdo.Symbolic.Extern_func in
@@ -69,6 +95,10 @@ let m =
       ("polynomeC", Extern_func (unit ^->. i32, polynomeC));
       ("polynomeD", Extern_func (unit ^->. i32, polynomeD));
       ("debug", Extern_func (unit ^->. unit, debug));
+      (* pour la saisie utilisateur *)
+      ("init_config_symbolic", Extern_func (unit ^->. unit, init_config_symbolic));
+      ("get_width", Extern_func (unit ^->. i32, get_width));
+      ("get_length", Extern_func (unit ^->. i32, get_length));
     ]
   in
   {

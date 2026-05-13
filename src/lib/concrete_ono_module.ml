@@ -106,7 +106,7 @@ let dimension (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
   if res > 0 then print_string "Entrez une longueur : "
   else print_string "Entrez une largeur : ";
   flush stdout;
-  read_int()
+  read_int ()
 
 open Raylib
 (* open Tsdl *)
@@ -285,6 +285,7 @@ let print_iteration_graphic (iter : Kdo.Concrete.I32.t)
       (Kdo.Concrete.I32.to_int max_iter)
   in
   Ok (draw_text text 0 0 10 Color.white)
+  
 
 let m =
   let open Kdo.Concrete.Extern_func in

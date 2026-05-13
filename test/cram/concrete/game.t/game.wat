@@ -92,6 +92,9 @@
         ;; des cases mémoire sur 32 bits soit 4 octets et donc ptr pointe sur l'adresse d'une case
         ;; qui n'est pas forcémenet 0,1,2...
 
+        ;; debuggggg
+        
+
         call $get_width
         call $get_length
 
@@ -592,7 +595,6 @@
         (local $time i32)
         (local $option_graph i32)
         (local $frame i32)
-
 
         i32.const 1
         local.set $time

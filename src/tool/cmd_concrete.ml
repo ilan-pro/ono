@@ -12,6 +12,7 @@ let term =
   and+ source_file = source_file
   and+ seed = seed
   and+ json_config = json_config
+  and+ symbolic_configuration = symbolic_configuration
   and+ steps = steps
   and+ last = last
   and+ option_graphic = option_graphic in
@@ -21,18 +22,30 @@ let term =
   | None -> (
       match steps with
       | Some n -> Ono.Concrete_ono_module.set_last_arg n
-      | None -> Ono.Concrete_ono_module.set_last_arg 8));
+      | None -> Ono.Concrete_ono_module.set_last_arg 8)
+  );
 
   (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
   (match steps with
   | Some n -> Ono.Concrete_ono_module.set_steps_arg n
-  | None -> Ono.Concrete_ono_module.set_steps_arg 8);
+  | None -> Ono.Concrete_ono_module.set_steps_arg 8
+  );
 
   (* pour l'option graphique *)
   (* comme l'argument est obligatoire (required), le cmdLiner l'a déjà simplifier en int *)
   if option_graphic > 0 then Ono.Concrete_ono_module.set_option_graphic 1
   else Ono.Concrete_ono_module.set_option_graphic 0;
+
+  (* nous devons donner le fichier xml au programme `concrete_driver` afin qu'il le transforme en json et qu'il le parse *)
+
+  let xml = 
+    match symbolic_configuration with
+    | None -> None
+    | Some path ->
+        let content = Bos.OS.File.read path |> Result.to_option in
+        Option.map (fun s -> s) content
+   in
 
   (* le fichier json *)
   let json =
@@ -47,8 +60,8 @@ let term =
   in
 
   (* c ici que le moteur d'owi execute les .wat *)
-  (* todo : on ajouter () pour ... *)
-  Ono.Concrete_driver.run ~source_file ?json () |> function
+  (* remettre le ?xml *)
+  Ono.Concrete_driver.run ~source_file ?json ?xml () |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))
 
