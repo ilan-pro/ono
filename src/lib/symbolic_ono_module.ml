@@ -42,6 +42,17 @@ let debug () : unit Owi.Symbolic_choice.t =
   print_string "jsuis là\n";
   Kdo.Symbolic.Choice.return ()
 
+let setX () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
+  print_string "Rentrez une valeur pour x : ";
+  flush stdout;
+  read_int ()
+
+let setY () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
+  print_string "Rentrez une valeur pour y : ";
+  flush stdout;
+  read_int ()
+
+
 (* nous allons initialiser la largeur et la longueur en demandant à l'utilisateur puis nous allons set une variable partagé via l'interface 
 `symbolic_config` *)
 
@@ -94,6 +105,8 @@ let m =
       ("polynomeB", Extern_func (unit ^->. i32, polynomeB));
       ("polynomeC", Extern_func (unit ^->. i32, polynomeC));
       ("polynomeD", Extern_func (unit ^->. i32, polynomeD));
+      ("setX", Extern_func (unit ^->. i32, setX));
+      ("setY", Extern_func (unit ^->. i32, setY));
       ("debug", Extern_func (unit ^->. unit, debug));
       (* pour la saisie utilisateur *)
       ("init_config_symbolic", Extern_func (unit ^->. unit, init_config_symbolic));
