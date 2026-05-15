@@ -583,6 +583,8 @@
 
                 i32.const 4
                 global.set $largeur 
+
+                call $init
             )
 
             (else 
