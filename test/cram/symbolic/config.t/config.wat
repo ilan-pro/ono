@@ -6,6 +6,7 @@
     (func $get_length (import "ono" "get_length") (result i32))
     (func $setX (import "ono" "setX") (result i32))
     (func $setY (import "ono" "setY") (result i32))
+    (func $get_config_symb (import "ono" "get_config_symb") (result i32))
     
     (global $largeur (mut i32) (i32.const 1))
     (global $longueur (mut i32) (i32.const 1))
@@ -373,7 +374,7 @@
     )
 
 
-    (func $all
+    (func $contrainte_8
         (local $nb_alive i32)
 
         
@@ -381,470 +382,654 @@
         call $count_alive
         (local.set $nb_alive)
         
-        (i32.eq (local.get $nb_alive) (i32.const 25))
+        (i32.eq (local.get $nb_alive) (i32.const 4))
         (if 
             (then unreachable)
         )
     )
 
-    ;; ;;    Au tour suivant, il y a au moins une cellule vivante sur la grille.
-    ;; (func $contrainte_3
-    ;;     (local $nb_alive i32)
 
-    ;;     call $step
-    ;;     call $count_alive
-    ;;     local.set $nb_alive
+        (func $contrainte_5
+        (local $nb_alive i32)
 
-    ;;     (i32.gt_s (local.get $nb_alive) (i32.const 0))
-    ;;     (if (then unreachable))    
-    ;; )
+        
+        call $step
+        call $count_alive
+        (local.set $nb_alive)
+        
+        (i32.eq (local.get $nb_alive) (i32.const 0))
+        (if 
+            (then unreachable)
+        )
+    )
+
+    (func $contrainte_4
+        (local $nb_alive i32)
+        (local $c i32)
+        
+        
+        call $step
+        call $count_alive
+        (local.set $nb_alive)
+        
+        global.get $largeur 
+        global.get $longueur 
+        i32.mul
+        local.set $c
+
+        (i32.eq (local.get $nb_alive) (local.get $c))
+        (if 
+            (then unreachable)
+        )
+    )
+
+
+     ;; ;;    Au tour suivant, il y a au moins une cellule vivante sur la grille.
+    (func $contrainte_3
+        (local $nb_alive i32)
+
+        call $step
+        call $count_alive
+        local.set $nb_alive
+
+        (i32.gt_s (local.get $nb_alive) (i32.const 0))
+        (if (then unreachable))    
+    )
 
     ;; ;; Au tour suivant, la cellule en position (x,y) doit être vivante.
-    ;; (func $contrainte_2
-    ;;     (local $x i32)
-    ;;     (local $y i32)
+    (func $contrainte_1
+        (local $x i32)
+        (local $y i32)
 
-    ;;     call $setX local.set $x
-    ;;     call $setY local.set $y
+        call $setX local.set $x
+        call $setY local.set $y
 
-    ;;     call $step
-    ;;     local.get $x
-    ;;     local.get $y
-    ;;     call $get_2d
-    ;;     (if (then unreachable))
-    ;; )
+        call $step
+        local.get $x
+        local.get $y
+        call $get_2d
+        (if (then unreachable))
+    )
     ;; ;; Au tour suivant, la cellule en position (x,y) doit être morte.
-    ;;  (func $contrainte_1
-    ;;     (local $x i32)
-    ;;     (local $y i32)
+     (func $contrainte_2
+        (local $x i32)
+        (local $y i32)
 
-    ;;     call $setX local.set $x
-    ;;     call $setY local.set $y
+        call $setX local.set $x
+        call $setY local.set $y
 
-    ;;     call $step
-    ;;     local.get $x
-    ;;     local.get $y
-    ;;     call $get_2d
-    ;;     i32.eqz
-    ;;     (if (then unreachable))
-    ;; )
+        call $step
+        local.get $x
+        local.get $y
+        call $get_2d
+        i32.eqz
+        (if (then unreachable))
+    )
 
     ;; ;; Au tour suivant, il existe un motif en "L" de trois cellules vivantes.
-    ;; (func $contrainte_12
-    ;;     (local $i i32) 
-    ;;     (local $j i32)
+    (func $contrainte_12
+        (local $i i32) 
+        (local $j i32)
 
 
-    ;;     (local.set $i (i32.const 0))
+        (local.set $i (i32.const 0))
 
-    ;;     call $step
-    ;;     (block $stop_i
-    ;;         (loop $loop_i
-    ;;             (i32.eq (local.get $i) (global.get $longueur))
-    ;;             (br_if $stop_i)
-    ;;             (local.set $j (i32.const 0))
+        call $step
+        (block $stop_i
+            (loop $loop_i
+                (i32.eq (local.get $i) (global.get $longueur))
+                (br_if $stop_i)
+                (local.set $j (i32.const 0))
 
-    ;;             (block $stop_j
-    ;;                 (loop $loop_j
+                (block $stop_j
+                    (loop $loop_j
                 
-    ;;                 (i32.eq (local.get $j) (global.get $largeur))
-    ;;                 (br_if $stop_j)
+                    (i32.eq (local.get $j) (global.get $largeur))
+                    (br_if $stop_j)
 
-    ;;                 ;; pos i j doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i j doit être vivante
+                    local.get $i
+                    local.get $j
+                    call $get_2d
 
-    ;;                 ;; pos i-1  j doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i-1  j doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.sub
+                    local.get $j
+                    call $get_2d
 
-    ;;                 i32.and
-    ;;                 ;; pos i j+1 doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    i32.and
+                    ;; pos i j+1 doit être vivante
+                    local.get $i
+                    local.get $j
+                    i32.const 1
+                    i32.add
+                    call $get_2d
+                    i32.and
 
-    ;;                 (if (then unreachable))
+                    local.get $i
+                    i32.const 1
+                    i32.sub
+                    local.get $j
+                    i32.const 1
+                    i32.add
+                    call $get_2d
+                    i32.eqz
+                    i32.and                    
+
+                    (if (then unreachable))
 
 
-    ;;                 (local.set $j (i32.add (local.get $j) (i32.const 1)))
-    ;;                 (br $loop_j)
-    ;;                 )
-    ;;             )
+                    (local.set $j (i32.add (local.get $j) (i32.const 1)))
+                    (br $loop_j)
+                    )
+                )
 
-    ;;             (local.set $i (i32.add (local.get $i) (i32.const 1)))
-    ;;             (br $loop_i)
-    ;;             )
-    ;;         )
-    ;; )
+                (local.set $i (i32.add (local.get $i) (i32.const 1)))
+                (br $loop_i)
+                )
+            )
+    )
 
     ;; ;; Au tour suivant, il existe deux cellules vivantes côte à côte.
-    ;; (func $contrainte_11
-    ;;     (local $i i32) 
-    ;;     (local $j i32)
+    (func $contrainte_11
+        (local $i i32) 
+        (local $j i32)
 
 
-    ;;     (local.set $i (i32.const 0))
+        (local.set $i (i32.const 0))
 
-    ;;     call $step
-    ;;     (block $stop_i
-    ;;         (loop $loop_i
-    ;;             (i32.eq (local.get $i) (global.get $longueur))
-    ;;             (br_if $stop_i)
-    ;;             (local.set $j (i32.const 0))
+        call $step
+        (block $stop_i
+            (loop $loop_i
+                (i32.eq (local.get $i) (global.get $longueur))
+                (br_if $stop_i)
+                (local.set $j (i32.const 0))
 
-    ;;             (block $stop_j
-    ;;                 (loop $loop_j
+                (block $stop_j
+                    (loop $loop_j
                 
-    ;;                 (i32.eq (local.get $j) (global.get $largeur))
-    ;;                 (br_if $stop_j)
+                    (i32.eq (local.get $j) (global.get $largeur))
+                    (br_if $stop_j)
 
 
-    ;;                 ;; pos i-1  j doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i-1  j doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.sub
+                    local.get $j
+                    call $get_2d
 
-    ;;                 ;; pos i+1  j doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i+1  j doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.add
+                    local.get $j
+                    call $get_2d
 
-    ;;                 i32.or
+                    i32.or
 
-    ;;                 ;; pos i j+1 doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 call $get_2d
+                    ;; pos i j+1 doit être vivante
+                    local.get $i
+                    local.get $j
+                    i32.const 1
+                    i32.add
+                    call $get_2d
 
-    ;;                 i32.or
+                    i32.or
 
-    ;;                 ;; pos i j-1 doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 call $get_2d
+                    ;; pos i j-1 doit être vivante
+                    local.get $i
+                    local.get $j
+                    i32.const 1
+                    i32.sub
+                    call $get_2d
 
-    ;;                 i32.or
+                    i32.or
 
-    ;;                 ;; pos i j doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i j doit être vivante
+                    local.get $i
+                    local.get $j
+                    call $get_2d
 
-    ;;                 i32.and
+                    i32.and
 
-    ;;                 (if (then unreachable))
+                    (if (then unreachable))
 
 
-    ;;                 (local.set $j (i32.add (local.get $j) (i32.const 1)))
-    ;;                 (br $loop_j)
-    ;;                 )
-    ;;             )
+                    (local.set $j (i32.add (local.get $j) (i32.const 1)))
+                    (br $loop_j)
+                    )
+                )
 
-    ;;             (local.set $i (i32.add (local.get $i) (i32.const 1)))
-    ;;             (br $loop_i)
-    ;;             )
-    ;;         )
-    ;; )
+                (local.set $i (i32.add (local.get $i) (i32.const 1)))
+                (br $loop_i)
+                )
+            )
+    )
 
 
     ;; ;; ;; Au tour suivant, il existe une cellule isolée (i.e. dont toutes les cellules voisines sont mortes).
-    ;; (func $contrainte_9
-    ;;     (local $i i32) 
-    ;;     (local $j i32)
+    (func $contrainte_9
+        (local $i i32) 
+        (local $j i32)
 
 
-    ;;     (local.set $i (i32.const 0))
+        (local.set $i (i32.const 0))
 
-    ;;     call $step
-    ;;     (block $stop_i
-    ;;         (loop $loop_i
-    ;;             (i32.eq (local.get $i) (global.get $longueur))
-    ;;             (br_if $stop_i)
-    ;;             (local.set $j (i32.const 0))
+        call $step
+        (block $stop_i
+            (loop $loop_i
+                (i32.eq (local.get $i) (global.get $longueur))
+                (br_if $stop_i)
+                (local.set $j (i32.const 0))
 
-    ;;             (block $stop_j
-    ;;                 (loop $loop_j
+                (block $stop_j
+                    (loop $loop_j
                 
-    ;;                 (i32.eq (local.get $j) (global.get $largeur))
-    ;;                 (br_if $stop_j)
+                    (i32.eq (local.get $j) (global.get $largeur))
+                    (br_if $stop_j)
 
-    ;;                 ;; pos i j doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i j doit être vivante
+                    local.get $i
+                    local.get $j
+                    call $get_2d
 
-    ;;                 ;; et ses voisins sont morts
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $count_neighboors
-    ;;                 i32.eqz
+                    ;; et ses voisins sont morts
+                    local.get $i
+                    local.get $j
+                    call $count_neighboors
+                    i32.eqz
                     
-    ;;                 i32.and
+                    i32.and
 
-    ;;                 (if (then unreachable))
+                    (if (then unreachable))
 
-    ;;                 (local.set $j (i32.add (local.get $j) (i32.const 1)))
-    ;;                 (br $loop_j)
-    ;;                 )
-    ;;             )
+                    (local.set $j (i32.add (local.get $j) (i32.const 1)))
+                    (br $loop_j)
+                    )
+                )
 
-    ;;             (local.set $i (i32.add (local.get $i) (i32.const 1)))
-    ;;             (br $loop_i)
-    ;;             )
-    ;;         )
-    ;; )
+                (local.set $i (i32.add (local.get $i) (i32.const 1)))
+                (br $loop_i)
+                )
+            )
+    )
 
     ;; ;;Au tour suivant, il existe une cellule entourée de cellules vivantes.
-    ;;  (func $contrainte_10
-    ;;     (local $i i32) 
-    ;;     (local $j i32)
-    ;;     (local $voisin i32)
+     (func $contrainte_10
+        (local $i i32) 
+        (local $j i32)
+        (local $voisin i32)
 
-    ;;     (local.set $i (i32.const 0))
-    ;;     (local.set $voisin (i32.const 0))
+        (local.set $i (i32.const 0))
+        (local.set $voisin (i32.const 0))
 
-    ;;     call $step
-    ;;     (block $stop_i
-    ;;         (loop $loop_i
-    ;;             (i32.eq (local.get $i) (global.get $longueur))
-    ;;             (br_if $stop_i)
-    ;;             (local.set $j (i32.const 0))
+        call $step
+        (block $stop_i
+            (loop $loop_i
+                (i32.eq (local.get $i) (global.get $longueur))
+                (br_if $stop_i)
+                (local.set $j (i32.const 0))
 
-    ;;             (block $stop_j
-    ;;                 (loop $loop_j
+                (block $stop_j
+                    (loop $loop_j
                 
-    ;;                 (i32.eq (local.get $j) (global.get $largeur))
-    ;;                 (br_if $stop_j)
+                    (i32.eq (local.get $j) (global.get $largeur))
+                    (br_if $stop_j)
 
-    ;;                 ;; pos i j doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $count_neighboors
-    ;;                 local.set $voisin
+                    ;; pos i j doit être vivante
+                    local.get $i
+                    local.get $j
+                    call $count_neighboors
+                    local.set $voisin
                     
-    ;;                 (i32.eq (local.get $voisin) (i32.const 8))
+                    (i32.eq (local.get $voisin) (i32.const 8))
 
-    ;;                 local.get $i
-    ;;                 local.set $j
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    local.get $i
+                    local.get $j
+                    call $get_2d
+                    i32.and
 
-    ;;                 (if (then unreachable))
+                    (if (then unreachable))
 
-    ;;                 (local.set $j (i32.add (local.get $j) (i32.const 1)))
-    ;;                 (br $loop_j)
-    ;;                 )
-    ;;             )
+                    (local.set $j (i32.add (local.get $j) (i32.const 1)))
+                    (br $loop_j)
+                    )
+                )
 
-    ;;             (local.set $i (i32.add (local.get $i) (i32.const 1)))
-    ;;             (br $loop_i)
-    ;;             )
-    ;;         )
-    ;; )
+                (local.set $i (i32.add (local.get $i) (i32.const 1)))
+                (br $loop_i)
+                )
+            )
+    )
 
 
     ;; ;; Au tour suivant, il existe un motif carré de 2*2 cellules vivantes.
-    ;; (func $contrainte_13
-    ;;     (local $i i32) 
-    ;;     (local $j i32)
+    (func $contrainte_13
+        (local $i i32) 
+        (local $j i32)
 
 
-    ;;     (local.set $i (i32.const 0))
+        (local.set $i (i32.const 0))
 
-    ;;     call $step
-    ;;     (block $stop_i
-    ;;         (loop $loop_i
-    ;;             (i32.eq (local.get $i) (global.get $longueur))
-    ;;             (br_if $stop_i)
-    ;;             (local.set $j (i32.const 0))
+        call $step
+        (block $stop_i
+            (loop $loop_i
+                (i32.eq (local.get $i) (global.get $longueur))
+                (br_if $stop_i)
+                (local.set $j (i32.const 0))
 
-    ;;             (block $stop_j
-    ;;                 (loop $loop_j
+                (block $stop_j
+                    (loop $loop_j
                 
-    ;;                 (i32.eq (local.get $j) (global.get $largeur))
-    ;;                 (br_if $stop_j)
+                    (i32.eq (local.get $j) (global.get $largeur))
+                    (br_if $stop_j)
 
-    ;;                 ;; 1er carré
+                    ;; 1er carré
 
-    ;;                 ;; pos i j doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i j doit être vivante
+                    local.get $i
+                    local.get $j
+                    call $get_2d
                     
-    ;;                 ;; pos i-1 j+1 doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    ;; pos i-1 j+1 doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.sub
+                    local.get $j
+                    i32.const 1
+                    i32.add
+                    call $get_2d
+                    i32.and
 
-    ;;                 ;; pos i-1  j doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 local.get $j
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    ;; pos i-1  j doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.sub
+                    local.get $j
+                    call $get_2d
+                    i32.and
 
-    ;;                 ;; pos i j+1 doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    ;; pos i j+1 doit être vivante
+                    local.get $i
+                    local.get $j
+                    i32.const 1
+                    i32.add
+                    call $get_2d
+                    i32.and
 
-    ;;                 ;; 2eme carré
+                    ;; 2eme carré
 
 
-    ;;                 ;; pos i j doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i j doit être vivante
+                    local.get $i
+                    local.get $j
+                    call $get_2d
 
-    ;;                 ;; pos i j+1 doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    ;; pos i j+1 doit être vivante
+                    local.get $i
+                    local.get $j
+                    i32.const 1
+                    i32.add
+                    call $get_2d
+                    i32.and
 
-    ;;                  ;; pos i+1  j doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 local.get $j
-    ;;                 call $get_2d
-    ;;                 i32.and
-                    
-
-    ;;                 ;; pos i+1 j+1 doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 call $get_2d
-    ;;                 i32.and
-
-    ;;                 i32.or
-
-    ;;                 ;; 3eme carré
-
-    ;;                 ;; pos i j doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $get_2d
-
-    ;;                 ;; pos i+1  j doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 local.get $j
-    ;;                 call $get_2d
-    ;;                 i32.and
+                     ;; pos i+1  j doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.add
+                    local.get $j
+                    call $get_2d
+                    i32.and
                     
 
-    ;;                 ;; pos i+1 j-1 doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.add
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    ;; pos i+1 j+1 doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.add
+                    local.get $j
+                    i32.const 1
+                    i32.add
+                    call $get_2d
+                    i32.and
 
-    ;;                 ;; pos i j-1 doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    i32.or
 
-    ;;                 i32.or
+                    ;; 3eme carré
 
-    ;;                 ;; 4eme carré
+                    ;; pos i j doit être vivante
+                    local.get $i
+                    local.get $j
+                    call $get_2d
 
-    ;;                 ;; pos i j doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    ;; pos i+1  j doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.add
+                    local.get $j
+                    call $get_2d
+                    i32.and
+                    
 
-    ;;                  ;; pos i j-1 doit être vivante
-    ;;                 local.get $i
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    ;; pos i+1 j-1 doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.add
+                    local.get $j
+                    i32.const 1
+                    i32.sub
+                    call $get_2d
+                    i32.and
 
-    ;;                 ;; pos i-1 j-1 doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 local.get $j
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 call $get_2d
-    ;;                 i32.and
+                    ;; pos i j-1 doit être vivante
+                    local.get $i
+                    local.get $j
+                    i32.const 1
+                    i32.sub
+                    call $get_2d
+                    i32.and
 
-    ;;                 ;; pos i-1  j doit être vivante
-    ;;                 local.get $i
-    ;;                 i32.const 1
-    ;;                 i32.sub
-    ;;                 local.get $j
-    ;;                 call $get_2d
+                    i32.or
 
-    ;;                 i32.and
+                    ;; 4eme carré
 
-    ;;                 i32.or
+                    ;; pos i j doit être vivante
+                    local.get $i
+                    local.get $j
+                    call $get_2d
 
-    ;;                 (if (then unreachable))
+                     ;; pos i j-1 doit être vivante
+                    local.get $i
+                    local.get $j
+                    i32.const 1
+                    i32.sub
+                    call $get_2d
+                    i32.and
+
+                    ;; pos i-1 j-1 doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.sub
+                    local.get $j
+                    i32.const 1
+                    i32.sub
+                    call $get_2d
+                    i32.and
+
+                    ;; pos i-1  j doit être vivante
+                    local.get $i
+                    i32.const 1
+                    i32.sub
+                    local.get $j
+                    call $get_2d
+
+                    i32.and
+
+                    i32.or
+
+                    (if (then unreachable))
 
 
-    ;;                 (local.set $j (i32.add (local.get $j) (i32.const 1)))
-    ;;                 (br $loop_j)
-    ;;                 )
-    ;;             )
+                    (local.set $j (i32.add (local.get $j) (i32.const 1)))
+                    (br $loop_j)
+                    )
+                )
 
-    ;;             (local.set $i (i32.add (local.get $i) (i32.const 1)))
-    ;;             (br $loop_i)
-    ;;             )
-    ;;         )
-    ;; )
+                (local.set $i (i32.add (local.get $i) (i32.const 1)))
+                (br $loop_i)
+                )
+            )
+    )
 
+
+
+
+
+
+
+
+      (func $choix_config (param $choix i32)
+
+    
+        local.get $choix
+        i32.const 1
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_1
+
+            )
+        )
+
+        local.get $choix
+        i32.const 2
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_2
+
+            )
+        )
+
+        local.get $choix
+        i32.const 3
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_3
+
+            )
+        )
+
+        local.get $choix
+        i32.const 4
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_4
+
+            )
+        )
+        local.get $choix
+        i32.const 5
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_5
+
+            )
+        )
+        local.get $choix
+        i32.const 8
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_8
+
+            )
+        )
+        local.get $choix
+        i32.const 9
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_9
+
+            )
+        )
+        local.get $choix
+        i32.const 10
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_10
+
+            )
+        )
+        local.get $choix
+        i32.const 11
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_11
+
+            )
+        )
+        local.get $choix
+        i32.const 12
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_12
+
+            )
+        )
+        local.get $choix
+        i32.const 13
+        i32.eq 
+
+        (if 
+            (then 
+                call $contrainte_13
+
+            )
+        )
+
+
+
+    )
 
 
     (func $main
         ;; nous devons faire ainsi pour avoir la largeur et la longueur dans le fichier de config json une fois en concrete
+
+        (local $i i32)
+        call $get_config_symb
+        (local.set $i)
+
         call $init_dimension
         call $init_mem
-        call $all
+        ;; call $all
         ;; call $contrainte_2
+        local.get $i
+        call $choix_config
     )
 
     (start $main)
 )
+
+
+
+

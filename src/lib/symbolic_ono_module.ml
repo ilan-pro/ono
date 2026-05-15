@@ -38,6 +38,12 @@ let polynomeD () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   flush stdout;
   read_int ()
 
+let config_symb= ref 0
+let set_config_symb n = config_symb := n
+
+let get_config_symb () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
+  Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !config_symb)  
+
 let debug () : unit Owi.Symbolic_choice.t =
   print_string "jsuis là\n";
   Kdo.Symbolic.Choice.return ()
@@ -105,6 +111,7 @@ let m =
       ("polynomeB", Extern_func (unit ^->. i32, polynomeB));
       ("polynomeC", Extern_func (unit ^->. i32, polynomeC));
       ("polynomeD", Extern_func (unit ^->. i32, polynomeD));
+      ("get_config_symb", Extern_func (unit ^->. i32, get_config_symb));
       ("setX", Extern_func (unit ^->. i32, setX));
       ("setY", Extern_func (unit ^->. i32, setY));
       ("debug", Extern_func (unit ^->. unit, debug));

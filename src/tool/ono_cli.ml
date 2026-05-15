@@ -130,3 +130,9 @@ let option_graphic =
     "Booléan pour dire si oui ou non, nous voulons l'affichage graphique"
   in
   Arg.(required & pos 1 (some int) None (info [] ~doc ~docv:"INT"))
+
+let option_config_symb=
+  let doc =
+    "Un entier pour dire le numéro de la config choisi"
+  in
+  Arg.(value & opt (some int) None & info [ "option_config_symb" ] ~doc ~docv:"INT")
