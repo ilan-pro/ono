@@ -1,7 +1,45 @@
+open Concrete_config
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~source_file =
+let run ~source_file ?json ?symbolic () =
+  let config_json =
+    match json with None -> None | Some js -> Some (parse_config js)
+  in
+  (match config_json with
+  | None -> Logs.info (fun m -> m "No config json, using defaults")
+  | Some conf ->
+      Logs.info (fun m ->
+          m "Run with width:%d height:%d" conf.width conf.length));
+
+  (* je donne la config à mon module ono via reference *)
+  global_config := config_json;
+
+  (* on ouvre le fichier json avec les dimensions afin de l'envoyer en paramètre de notre parser pour qu'il 
+  puisse créer alive *)
+  let json_symbolic =
+    (* le chemin vers le fichier en Fpath *)
+    let path = Fpath.v "config/symbolic_config.json" in
+    (* on créé le fichier json en Yojson *)
+    let content = Bos.OS.File.read path |> Result.to_option in
+    Option.map Yojson.Safe.from_string content
+  in
+  let config_symbolic =
+    match symbolic with
+    | None -> None
+    | Some symbolic_value -> (
+        match json_symbolic with
+        | None -> None
+        | Some symbolic_dimension ->
+            Some (parse_json_to_symbolic symbolic_value symbolic_dimension))
+  in
+  (match config_symbolic with
+  | None -> Logs.info (fun m -> m "No config xml, using defaults")
+  | Some _ ->
+      global_config := config_symbolic;
+      Logs.info (fun m -> m "Run with symbolic config xml ")
+      (* je donne la config à mon module ono via reference *));
+
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);
   let* wat_module = Kdo.Parse.Wat.Module.from_file source_file in

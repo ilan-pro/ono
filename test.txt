@@ -1,0 +1,19 @@
+Rentrez une largeur pour la grille : Rentrez une longueur pour la grille : model {
+  symbol symbol_0 i32 0
+  symbol symbol_1 i32 1
+  symbol symbol_2 i32 0
+  symbol symbol_3 i32 1
+  symbol symbol_4 i32 0
+  symbol symbol_5 i32 0
+  symbol symbol_6 i32 0
+  symbol symbol_7 i32 1
+  symbol symbol_8 i32 0
+  symbol symbol_9 i32 0
+  symbol symbol_10 i32 1
+  symbol symbol_11 i32 1
+  symbol symbol_12 i32 0
+  symbol symbol_13 i32 0
+  symbol symbol_14 i32 0
+  symbol symbol_15 i32 1
+}
+breadcrumbs 1

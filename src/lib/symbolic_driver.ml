@@ -40,7 +40,8 @@ let run ~source_file =
        ~no_assert_failure_expression_printing:false
        ~deterministic_result_order:false ~fail_mode:Kdo.Symbolic.Parameters.Both
        ~workspace:(Fpath.v ".") ~solver:Smtml.Solver_type.Z3_solver
-       ~model_format:Kdo.Symbolic.Model.Scfg ~model_out_file:None
+       ~model_format:Kdo.Symbolic.Model.Json
+       ~model_out_file:(Some (Fpath.v "config/test.json"))
        ~with_breadcrumbs:true ~run_time:None
   |> function
   | Ok () -> Ok ()

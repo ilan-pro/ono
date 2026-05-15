@@ -4,11 +4,15 @@ Test the output of the man page:
          ono-symbolic
   
   SYNOPSIS
-         ono symbolic [OPTION]… FILE
+         ono symbolic [--contrainte=INT] [OPTION]… FILE
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
+  
+  OPTIONS
+         --contrainte=INT
+             Un entier pour dire le numéro de la config choisi
   
   COMMON OPTIONS
          --color=WHEN (absent=auto)

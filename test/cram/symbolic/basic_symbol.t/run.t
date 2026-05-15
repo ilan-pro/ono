@@ -5,19 +5,30 @@ Check that branching works:
                (module
                  (import "ono" "i32_symbol" (func $i32_symbol  (result i32)))
                  (import "ono" "print_i32" (func $print_i32  (param i32)))
-                 (func $main (local $n i32)
+                 (func $main (local $n i32) (local $n2 i32) (local $n3 i32)
                    call $i32_symbol
                    local.tee $n
                    i32.const 42
-                   i32.lt_s
-                   (if
-                     (then
-                       return
-                     )
-                     (else
-                       unreachable
-                     )
-                   )
+                   i32.ne
+                   call $i32_symbol
+                   local.tee $n2
+                   i32.const 42
+                   i32.ne
+                   i32.or
+                   local.get $n
+                   local.get $n2
+                   i32.lt_u
+                   i32.or
+                   call $i32_symbol
+                   local.tee $n3
+                   i32.const 42
+                   i32.ne
+                   i32.or
+                   local.get $n2
+                   local.get $n3
+                   i32.lt_u
+                   i32.or
+                   unreachable
                  )
                  (start $main)
                )
@@ -29,19 +40,30 @@ Check that branching works:
                  (type (func (result i32)))
                  (type (func (param i32)))
                  (type (func))
-                 (func $main (local $n i32)
+                 (func $main (local $n i32) (local $n2 i32) (local $n3 i32)
                    call 0
                    local.tee 0
                    i32.const 42
-                   i32.lt_s
-                   (if
-                     (then
-                       return
-                     )
-                     (else
-                       unreachable
-                     )
-                   )
+                   i32.ne
+                   call 0
+                   local.tee 1
+                   i32.const 42
+                   i32.ne
+                   i32.or
+                   local.get 0
+                   local.get 1
+                   i32.lt_u
+                   i32.or
+                   call 0
+                   local.tee 2
+                   i32.const 42
+                   i32.ne
+                   i32.or
+                   local.get 1
+                   local.get 2
+                   i32.lt_u
+                   i32.or
+                   unreachable
                  )
                  (start 2)
                )
@@ -49,11 +71,8 @@ Check that branching works:
   ono: [INFO] Linking...
   ono: [INFO] Interpreting...
   ono: [ERROR] Trap: unreachable
-  model {
-    symbol symbol_0 i32 1073741824
-  }
-  breadcrumbs 0
-  ono: [ERROR] owi error: Reached problem!
+  ono: [DEBUG] scope tokens: [symbol symbol_0 ; symbol symbol_1 ; symbol symbol_2]
+  ono: [ERROR] owi error: create temporary file config/bos-78cd21.tmp: No such file or directory
   [123]
   $ ono symbolic branching_true.wat -vv
   ono: [INFO] Parsing file branching_true.wat...
@@ -105,9 +124,6 @@ Check that branching works:
   ono: [INFO] Linking...
   ono: [INFO] Interpreting...
   ono: [ERROR] Trap: unreachable
-  model {
-    symbol symbol_0 i32 0
-  }
-  breadcrumbs 1
-  ono: [ERROR] owi error: Reached problem!
+  ono: [DEBUG] scope tokens: [symbol symbol_0]
+  ono: [ERROR] owi error: create temporary file config/bos-40d966.tmp: No such file or directory
   [123]

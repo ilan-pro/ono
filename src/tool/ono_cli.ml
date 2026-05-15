@@ -48,6 +48,20 @@ let log_level =
 
 (* Arguments helpers. *)
 
+(* il faut accepter aussi du json *)
+(* même logique que pour accepter le fichier pour le premier argument FILE mais ici je spécifie l'extension qui doit être json *)
+let existing_file_json =
+  let parse s =
+    let open Ono.Syntax in
+    let* path = Fpath.of_string s in
+    let* exists = Bos.OS.File.exists path in
+    let json = Fpath.has_ext "json" path in
+    if exists && json then Ok path
+    else if not exists then Fmt.error_msg "file does not exist"
+    else Fmt.error_msg "file must have .json extension"
+  in
+  Arg.conv (parse, Fpath.pp)
+
 let existing_file_conv =
   let parse s =
     let open Ono.Syntax in
@@ -86,3 +100,41 @@ let seed =
   Arg.(value & opt (some int) None & info [ "seed" ] ~doc ~docv:"INT")
 
 (* Définition de l'option seed pour la CLI *)
+
+let steps =
+  let doc = "Step pour limiter le nbr d'itération" in
+  Arg.(value & opt (some int) None & info [ "steps" ] ~doc ~docv:"INT")
+
+let test =
+  let doc = "Commande pour exécuter les cram tests" in
+  Arg.(value & opt (some int) None & info [ "test" ] ~doc ~docv:"INT")
+
+let json_config =
+  let doc = "File JSON for handmade configuration" in
+  Arg.(
+    value
+    & opt (some existing_file_json) None
+    & info [ "config" ] ~doc ~docv:"CONFIG")
+
+let symbolic_configuration =
+  let doc = "File JSON for symbolic configuration" in
+  Arg.(
+    value
+    & opt (some existing_file_json) None
+    & info [ "symbolic_config" ] ~doc ~docv:"SYMBOLIC_CONFIG")
+
+let last =
+  let doc = "Affiche les n dernieres itérations." in
+  Arg.(value & opt (some int) None & info [ "last" ] ~doc ~docv:"INT")
+
+(* nous n'avons pas le droit de mettre un nom car il est obligatoire et sa position est explicite dans la cli *)
+(* les noms sont utiles quand c'est optionnel car nous pouvons les mettre dans n'importe quel ordre *)
+let option_graphic =
+  let doc =
+    "Booléan pour dire si oui ou non, nous voulons l'affichage graphique"
+  in
+  Arg.(required & pos 1 (some int) None (info [] ~doc ~docv:"INT"))
+
+let option_config_symb =
+  let doc = "Un entier pour dire le numéro de la config choisi" in
+  Arg.(value & opt (some int) None & info [ "contrainte" ] ~doc ~docv:"INT")

@@ -4,15 +4,34 @@ Test the output of the man page:
          ono-concrete
   
   SYNOPSIS
-         ono concrete [--seed=INT] [OPTION]… FILE
+         ono concrete [OPTION]… FILE INT
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
   
+         INT (required)
+             Booléan pour dire si oui ou non, nous voulons l'affichage
+             graphique
+  
   OPTIONS
+         --config=CONFIG
+             File JSON for handmade configuration
+  
+         --last=INT
+             Affiche les n dernieres itérations.
+  
          --seed=INT
              Seed for random number generator.
+  
+         --steps=INT
+             Step pour limiter le nbr d'itération
+  
+         --symbolic_config=SYMBOLIC_CONFIG
+             File JSON for symbolic configuration
+  
+         --test=INT
+             Commande pour exécuter les cram tests
   
   COMMON OPTIONS
          --color=WHEN (absent=auto)
