@@ -90,10 +90,7 @@
         (local $rand i32)
         (local $i i32) ;; obligé pour avoir la vraie position dans le décalage car on travaille avec 
         ;; des cases mémoire sur 32 bits soit 4 octets et donc ptr pointe sur l'adresse d'une case
-        ;; qui n'est pas forcémenet 0,1,2...
-
-        ;; debuggggg
-        
+        ;; qui n'est pas forcémenet 0,1,2...        
 
         call $get_width
         call $get_length
@@ -155,10 +152,6 @@
 
         (local.get $i)
         (local.get $j)
-
-        ;; (local.get $i)
-        ;; (local.get $j)
-        ;; (call $print_i32_custom)
     )
 
     (func $get_2d (param $i i32) (param $j i32) (result i32)
@@ -334,17 +327,6 @@
                     )
                 )
 
-                ;; local.get $i
-                ;; local.get $j
-                ;; call $get_2d
-                ;; call $debogue_valeur
-                ;; local.get $i
-                ;; call $debogue_index
-                ;; local.get $j
-                ;; call $debogue_index
-                
-
-
                 (local.set $j
                     (i32.add (local.get $j) (i32.const 1))
                 )
@@ -451,15 +433,6 @@
                         local.get $j
                         call $count_neighboors
                         local.set $n
-
-                        ;; debogue
-                        ;; local.get $i 
-                        ;; call $debogue_index
-                        ;; local.get $j 
-                        ;; call $debogue_index
-                        ;; local.get $n
-                        ;; call $debogue_valeur
-
 
                         ;; Récupérer l'état actuel de la cellule
                         local.get $i
