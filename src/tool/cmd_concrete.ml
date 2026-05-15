@@ -39,12 +39,13 @@ let term =
 
   (* nous devons donner le fichier xml au programme `concrete_driver` afin qu'il le transforme en json et qu'il le parse *)
 
-  let xml = 
+  let symbolic = 
     match symbolic_configuration with
     | None -> None
     | Some path ->
+        (* même logique que plus bas *)
         let content = Bos.OS.File.read path |> Result.to_option in
-        Option.map (fun s -> s) content
+        Option.map Yojson.Safe.from_string content
    in
 
   (* le fichier json *)
@@ -61,7 +62,7 @@ let term =
 
   (* c ici que le moteur d'owi execute les .wat *)
   (* remettre le ?xml *)
-  Ono.Concrete_driver.run ~source_file ?json ?xml () |> function
+  Ono.Concrete_driver.run ~source_file ?json ?symbolic () |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))
 

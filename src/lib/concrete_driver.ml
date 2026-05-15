@@ -3,7 +3,7 @@ open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
 (* remettre ?xml *)
-let run ~source_file ?json ?xml () =
+let run ~source_file ?json ?symbolic () =
   (* json *)
   let config_json =
     match json with None -> None | Some js -> Some (parse_config js)
@@ -27,21 +27,21 @@ let run ~source_file ?json ?xml () =
     Option.map Yojson.Safe.from_string content
   
   in
-  let config_xml =
-    match xml with 
+  let config_symbolic =
+    match symbolic with 
     | None -> None 
-    | Some x -> 
+    | Some symbolic_value -> 
         match json_symbolic with 
         | None -> None
-        | Some config_symbolic -> Some (parse_xml_to_json x config_symbolic)
+        | Some symbolic_dimension -> Some (parse_json_to_symbolic symbolic_value symbolic_dimension)
   in 
-  (match config_xml with
+  (match config_symbolic with
   | None -> Logs.info (fun m -> m "No config xml, using defaults")
   | Some _ -> 
     Logs.info (fun m -> m "Run with symbolic config xml "));      
     
   (* je donne la config à mon module ono via reference *)
-  global_config := config_xml;
+  global_config := config_symbolic;
 
   (* let config_xml =
     match xml with None -> None | Some x -> Some (parse_xml_to_json x)

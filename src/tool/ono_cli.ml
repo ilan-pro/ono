@@ -62,18 +62,6 @@ let existing_file_json =
   in
   Arg.conv (parse, Fpath.pp)
 
-let existing_file_xml =
-  let parse s =
-    let open Ono.Syntax in
-    let* path = Fpath.of_string s in
-    let* exists = Bos.OS.File.exists path in
-    let xml = Fpath.has_ext "xml" path in
-    if exists && xml then Ok path
-    else if not exists then Fmt.error_msg "file does not exist"
-    else Fmt.error_msg "file must have .xml extension"
-  in
-  Arg.conv (parse, Fpath.pp)
-
 let existing_file_conv =
   let parse s =
     let open Ono.Syntax in
@@ -128,7 +116,7 @@ let symbolic_configuration =
   let doc = "File XML to JSON for symbolic configuration" in
   Arg.(
     value
-    & opt (some existing_file_xml) None
+    & opt (some existing_file_json) None
     & info [ "symbolic_config" ] ~doc ~docv:"SYMBOLIC_CONFIG")
 
 let last =

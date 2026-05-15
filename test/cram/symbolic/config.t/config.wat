@@ -381,7 +381,7 @@
         call $count_alive
         (local.set $nb_alive)
         
-        (i32.eq (local.get $nb_alive) (i32.const 4))
+        (i32.eq (local.get $nb_alive) (i32.const 25))
         (if 
             (then unreachable)
         )

@@ -23,46 +23,33 @@ let parse_config js =
         | _ -> failwith "Invalid format")
   in
   { width; length; alive }
-
-(* lire les balises *)
-let read_xml_values xml_string =
-  let re = Str.regexp "<input>[ \n\t\r]*\\([01]\\)[ \n\t\r]*</input>" in
-
-  let rec loop pos acc =
-    try
-      ignore (Str.search_forward re xml_string pos);
-
-      let v =
-        Str.matched_group 1 xml_string
-        |> int_of_string
-      in
-
-      loop (Str.match_end ()) (v :: acc)
-
-    with Not_found ->
-      List.rev acc
+  
+let parse_json_to_symbolic symbolic_value symbolic_dimension =
+  (* dimensions *)
+  let width = symbolic_dimension |> member "largeur" |> to_int
+  in
+  let length = symbolic_dimension |> member "longueur" |> to_int
   in
 
-  loop 0 []
-  
-let parse_xml_to_json xml js =
-  (* largeur / longueur depuis le JSON *)
-  let width = js |> member "largeur" |> to_int in
-  let length = js |> member "longueur" |> to_int in
-
-  (* liste des 0/1 *)
-  let values = read_xml_values xml in
+  (* extraction des valeurs depuis "model" *)
+  let values =
+    symbolic_value
+    |> member "model"
+    |> to_list
+    |> List.map (fun item ->
+        item |> member "value" |> to_string |> int_of_string)
+  in
 
   (* construction de alive *)
   let alive =
     values
     |> List.mapi (fun idx v ->
-           let i = idx / width in
-           let j = idx mod width in
+        let i = idx / width in
+        let j = idx mod width in
 
-           if v = 1 then Some (i, j)
-           else None)
-    |> List.filter_map (fun x -> x)
+        if v = 1 then Some (i, j)
+        else None)
+    |> List.filter_map Fun.id
   in
 
   { width; length; alive }
