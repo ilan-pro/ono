@@ -2,18 +2,20 @@
 
 ## [unreleased]
 
+- Final version
+
 ## [0.5]
 
 ### Fixed
 ### Changed
 ### Removed
 
-## Added -2026-05-13
-    - Génération de configurations pour le jeu de la Vie 
-    - Contraintes 1-5 8-13
-    - Report.md
+## Added - 2026-05-13
+- Génération de configurations pour le jeu de la Vie 
+- Contraintes 1-5 8-13
+- Report.md
 
-## Added -2026-05-08
+## Added - 2026-05-08
 
 - Code du polynome pour la partie symbolique
 

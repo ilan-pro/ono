@@ -2,7 +2,7 @@
 
 # Comment l’exécuter ?
 
-commande générique : `dune exec -- ono concret options`  :
+commande générique : `dune exec -- ono concret options`
 
 ## OPTION CONCRETE/SYMBOLIC
 
@@ -58,7 +58,9 @@ commande générique : `dune exec -- ono concret options`  :
 
 - Boutons pour choisir l’itération précédente et suivante du jeu de la vie dans la partie graphique
 - Rendre la vue de l’interface proportionnelle à la taille de la fenêtre
-- pour la partie  symbolique générer toutes les configurations possibles pas que la 1ère 
+- Générer toutes les configurations possible en une seule exécution 
+- Gestion des erreurs dans les options (entiers négatifs...)
+- Gestion des anomalies dans les solutions des polynomes du au type utilisé (avec i32 > n solutions pour un polynome de degré n)
 
 # Points subtiles
 
@@ -67,7 +69,7 @@ Convertion des fichiers json en une configuration du jeu de la vie
 interface graphique : affichage des cellules sur une fenetre graphique + zoom dézoom (touche du clavier 'P' : Zomm , touche du clavier 'O' : Dézoom)
 
 symbolique : 
-- remplacement des if par des opérations arithmétique
+- remplacement des if par des opérations arithmétique afin d'optimiser.
 
 wasm :
 - gestion de la mémoire linéaire
