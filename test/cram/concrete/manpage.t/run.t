@@ -4,11 +4,15 @@ Test the output of the man page:
          ono-concrete
   
   SYNOPSIS
-         ono concrete [OPTION]… FILE
+         ono concrete [OPTION]… FILE INT
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
+  
+         INT (required)
+             Booléan pour dire si oui ou non, nous voulons l'affichage
+             graphique
   
   OPTIONS
          --config=CONFIG
@@ -21,7 +25,10 @@ Test the output of the man page:
              Seed for random number generator.
   
          --steps=INT
-             Step pour limiter le nbr d'itération TODO
+             Step pour limiter le nbr d'itération
+  
+         --symbolic_config=SYMBOLIC_CONFIG
+             File JSON for symbolic configuration
   
   COMMON OPTIONS
          --color=WHEN (absent=auto)

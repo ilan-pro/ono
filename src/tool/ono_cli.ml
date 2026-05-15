@@ -113,7 +113,7 @@ let json_config =
     & info [ "config" ] ~doc ~docv:"CONFIG")
 
 let symbolic_configuration =
-  let doc = "File XML to JSON for symbolic configuration" in
+  let doc = "File JSON for symbolic configuration" in
   Arg.(
     value
     & opt (some existing_file_json) None
@@ -135,4 +135,4 @@ let option_config_symb=
   let doc =
     "Un entier pour dire le numéro de la config choisi"
   in
-  Arg.(value & opt (some int) None & info [ "option_config_symb" ] ~doc ~docv:"INT")
+  Arg.(value & opt (some int) None & info [ "contrainte" ] ~doc ~docv:"INT")

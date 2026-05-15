@@ -1,31 +1,10 @@
 {
   "labels": [],
   "model": [
-    { "symbol": "symbol_0", "type": "i32", "value": "1" },
+    { "symbol": "symbol_0", "type": "i32", "value": "0" },
     { "symbol": "symbol_1", "type": "i32", "value": "0" },
     { "symbol": "symbol_2", "type": "i32", "value": "0" },
-    { "symbol": "symbol_3", "type": "i32", "value": "0" },
-    { "symbol": "symbol_4", "type": "i32", "value": "0" },
-    { "symbol": "symbol_5", "type": "i32", "value": "1" },
-    { "symbol": "symbol_6", "type": "i32", "value": "1" },
-    { "symbol": "symbol_7", "type": "i32", "value": "0" },
-    { "symbol": "symbol_8", "type": "i32", "value": "0" },
-    { "symbol": "symbol_9", "type": "i32", "value": "0" },
-    { "symbol": "symbol_10", "type": "i32", "value": "0" },
-    { "symbol": "symbol_11", "type": "i32", "value": "0" },
-    { "symbol": "symbol_12", "type": "i32", "value": "0" },
-    { "symbol": "symbol_13", "type": "i32", "value": "0" },
-    { "symbol": "symbol_14", "type": "i32", "value": "0" },
-    { "symbol": "symbol_15", "type": "i32", "value": "0" },
-    { "symbol": "symbol_16", "type": "i32", "value": "0" },
-    { "symbol": "symbol_17", "type": "i32", "value": "0" },
-    { "symbol": "symbol_18", "type": "i32", "value": "0" },
-    { "symbol": "symbol_19", "type": "i32", "value": "0" },
-    { "symbol": "symbol_20", "type": "i32", "value": "0" },
-    { "symbol": "symbol_21", "type": "i32", "value": "0" },
-    { "symbol": "symbol_22", "type": "i32", "value": "0" },
-    { "symbol": "symbol_23", "type": "i32", "value": "0" },
-    { "symbol": "symbol_24", "type": "i32", "value": "0" }
+    { "symbol": "symbol_3", "type": "i32", "value": "0" }
   ],
   "breadcrumbs": [ 1 ]
 }

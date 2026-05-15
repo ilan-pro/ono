@@ -466,6 +466,7 @@
         (if (then unreachable))
     )
 
+
     ;; ;; Au tour suivant, il existe un motif en "L" de trois cellules vivantes.
     (func $contrainte_12
         (local $i i32) 

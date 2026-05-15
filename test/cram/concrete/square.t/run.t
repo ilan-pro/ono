@@ -1,3 +1,4 @@
   $ ono concrete square.wat
-  100
-  OK!
+  Usage: ono concrete [--help] [OPTION]… FILE INT
+  ono: required argument INT is missing
+  [124]
