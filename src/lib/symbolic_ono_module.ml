@@ -44,9 +44,6 @@ let set_config_symb n = config_symb := n
 let get_config_symb () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !config_symb)  
 
-let debug () : unit Owi.Symbolic_choice.t =
-  print_string "jsuis là\n";
-  Kdo.Symbolic.Choice.return ()
 
 let setX () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Rentrez une valeur pour x : ";

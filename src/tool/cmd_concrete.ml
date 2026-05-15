@@ -37,7 +37,6 @@ let term =
   if option_graphic > 0 then Ono.Concrete_ono_module.set_option_graphic 1
   else Ono.Concrete_ono_module.set_option_graphic 0;
 
-  (* nous devons donner le fichier xml au programme `concrete_driver` afin qu'il le transforme en json et qu'il le parse *)
 
   let symbolic = 
     match symbolic_configuration with
@@ -60,8 +59,6 @@ let term =
         Option.map Yojson.Safe.from_string content
   in
 
-  (* c ici que le moteur d'owi execute les .wat *)
-  (* remettre le ?xml *)
   Ono.Concrete_driver.run ~source_file ?json ?symbolic () |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))

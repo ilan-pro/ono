@@ -299,7 +299,6 @@
         (local $n i32)    ;; Nombre de voisins vivants
         (local $v i32)    ;; Nouvel état de la cellule
 
-        ;; PHASE 1 : PARCOURS ET CALCUL DANS BUFFER TEMPO
         i32.const 0
         local.set $i
         (block $done_i
@@ -321,7 +320,6 @@
                         call $get_2d
                         local.set $v
 
-                        ;; Version de amenah
                         local.get $n
                         i32.const 3
                         i32.eq
@@ -369,7 +367,6 @@
                 br_if $loop_i
             )
         )
-        ;; PHASE 2 : RECOPIE BUFFER TEMPO VERS GRILLE PRINCIPALE
         call $copy_tmp
     )
 
@@ -1015,15 +1012,12 @@
 
     (func $main
         ;; nous devons faire ainsi pour avoir la largeur et la longueur dans le fichier de config json une fois en concrete
-
         (local $i i32)
         call $get_config_symb
         (local.set $i)
 
         call $init_dimension
         call $init_mem
-        ;; call $all
-        ;; call $contrainte_2
         local.get $i
         call $choix_config
     )

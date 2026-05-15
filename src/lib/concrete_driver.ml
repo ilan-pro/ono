@@ -2,9 +2,7 @@ open Concrete_config
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-(* remettre ?xml *)
 let run ~source_file ?json ?symbolic () =
-  (* json *)
   let config_json =
     match json with None -> None | Some js -> Some (parse_config js)
   in
@@ -43,16 +41,6 @@ let run ~source_file ?json ?symbolic () =
   (* je donne la config à mon module ono via reference *)
   global_config := config_symbolic;
 
-  (* let config_xml =
-    match xml with None -> None | Some x -> Some (parse_xml_to_json x)
-  in
-
-  (match config_xml with
-  | None -> Logs.info (fun m -> m "No config xml, using defaults")
-  | Some conf -> Logs.info (fun m -> m "Run with xml config loaded"));
-
-  (* je donne la config xml à mon module ono via reference *)
-  global_config_symbolic := config_xml; *)
 
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);

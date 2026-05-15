@@ -22,7 +22,6 @@ let newline () : (unit, _) Result.t =
   Ok ()
 
 let clear_screen () : (unit, _) Result.t =
-  (* Format.printf "\027[2J"; *)
   Buffer.output_buffer stdout buffer;
   flush stdout;
   Buffer.clear buffer;
@@ -109,7 +108,6 @@ let dimension (forRow : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
   read_int ()
 
 open Raylib
-(* open Tsdl *)
 
 type camera = {
   mutable offset_x : int;
