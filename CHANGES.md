@@ -2,13 +2,8 @@
 
 ## [unreleased]
 
-- Final version
 
-## [0.5]
-
-### Fixed
-### Changed
-### Removed
+## [0.5] - Final version
 
 ## Added - 2026-05-13
 - Génération de configurations pour le jeu de la Vie 

@@ -11,12 +11,14 @@
     (func $debogue_valeur (import "ono" "debogue_valeur") (param i32))
     (func $print_separateur (import "ono" "print_separateur") (param i32))
     (func $get_steps (import "ono" "get_steps") (result i32))
+    (func $get_test (import "ono" "get_test") (result i32))
     (func $get_last (import "ono" "get_last") (result i32))
     (func $config_not_null (import "ono" "config_not_null") (result i32))
     (func $get_width (import "ono" "get_width") (result i32))
     (func $get_length (import "ono" "get_length") (result i32))
     (func $get_alive (import "ono" "get_alive") (param i32) (param i32) (result i32))
     (func $dimension (import "ono" "dimension") (param i32) (result i32))
+
 
     (func $get_option_graphic (import "ono" "get_option_graphic") (result i32))    
     (func $open_window (import "ono" "open_window"))
@@ -572,19 +574,38 @@
         i32.const 1
         local.set $time
         
-        (call $config_not_null)
-        (if 
-            (then call $init_with_config) 
+        
+        (call $get_test)
+        (if
+            (then 
+                i32.const 4
+                global.set $longueur 
+
+                i32.const 4
+                global.set $largeur 
+            )
+
             (else 
-                call $init
-                i32.const 0    
-                call $dimension 
-                global.set $largeur
-                
-                i32.const 1
-                call $dimension 
-                global.set $longueur
-            )  
+                (call $config_not_null)
+
+                (if 
+                    (then 
+                        call $init_with_config
+                    ) 
+
+                    (else 
+                        call $init
+
+                        i32.const 0    
+                        call $dimension 
+                        global.set $largeur
+                                
+                        i32.const 1
+                        call $dimension 
+                        global.set $longueur
+                    )  
+                )
+            )
         )
 
         (call $get_option_graphic)

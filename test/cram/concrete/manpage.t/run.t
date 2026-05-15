@@ -30,6 +30,9 @@ Test the output of the man page:
          --symbolic_config=SYMBOLIC_CONFIG
              File JSON for symbolic configuration
   
+         --test=INT
+             Commande pour exécuter les cram tests
+  
   COMMON OPTIONS
          --color=WHEN (absent=auto)
              Colorize the output. WHEN must be one of auto, always or never.

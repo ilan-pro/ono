@@ -13,6 +13,7 @@ let term =
   and+ seed = seed
   and+ json_config = json_config
   and+ symbolic_configuration = symbolic_configuration
+  and+ test = test
   and+ steps = steps
   and+ last = last
   and+ option_graphic = option_graphic in
@@ -22,30 +23,31 @@ let term =
   | None -> (
       match steps with
       | Some n -> Ono.Concrete_ono_module.set_last_arg n
-      | None -> Ono.Concrete_ono_module.set_last_arg 8)
-  );
+      | None -> Ono.Concrete_ono_module.set_last_arg 8));
+
+  (match test with
+  | Some n -> Ono.Concrete_ono_module.set_test n
+  | None -> Ono.Concrete_ono_module.set_test 0);
 
   (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
   (match steps with
   | Some n -> Ono.Concrete_ono_module.set_steps_arg n
-  | None -> Ono.Concrete_ono_module.set_steps_arg 8
-  );
+  | None -> Ono.Concrete_ono_module.set_steps_arg 8);
 
   (* pour l'option graphique *)
   (* comme l'argument est obligatoire (required), le cmdLiner l'a déjà simplifier en int *)
   if option_graphic > 0 then Ono.Concrete_ono_module.set_option_graphic 1
   else Ono.Concrete_ono_module.set_option_graphic 0;
 
-
-  let symbolic = 
+  let symbolic =
     match symbolic_configuration with
     | None -> None
     | Some path ->
         (* même logique que plus bas *)
         let content = Bos.OS.File.read path |> Result.to_option in
         Option.map Yojson.Safe.from_string content
-   in
+  in
 
   (* le fichier json *)
   let json =

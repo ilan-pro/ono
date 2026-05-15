@@ -23,19 +23,15 @@ let parse_config js =
         | _ -> failwith "Invalid format")
   in
   { width; length; alive }
-  
+
 let parse_json_to_symbolic symbolic_value symbolic_dimension =
   (* dimensions *)
-  let width = symbolic_dimension |> member "largeur" |> to_int
-  in
-  let length = symbolic_dimension |> member "longueur" |> to_int
-  in
+  let width = symbolic_dimension |> member "largeur" |> to_int in
+  let length = symbolic_dimension |> member "longueur" |> to_int in
 
   (* extraction des valeurs depuis "model" *)
   let values =
-    symbolic_value
-    |> member "model"
-    |> to_list
+    symbolic_value |> member "model" |> to_list
     |> List.map (fun item ->
         item |> member "value" |> to_string |> int_of_string)
   in
@@ -47,11 +43,8 @@ let parse_json_to_symbolic symbolic_value symbolic_dimension =
         let i = idx / width in
         let j = idx mod width in
 
-        if v = 1 then Some (i, j)
-        else None)
+        if v = 1 then Some (i, j) else None)
     |> List.filter_map Fun.id
   in
 
   { width; length; alive }
-
-

@@ -7,14 +7,14 @@ let info = Cmd.info "symbolic" ~exits
 
 let term =
   let open Term.Syntax in
-  let+ () = setup_log and+ source_file = source_file 
-  and+ option_config_symb = option_config_symb
-  in
+  let+ () = setup_log
+  and+ source_file = source_file
+  and+ option_config_symb = option_config_symb in
 
-  (match option_config_symb with 
+  (match option_config_symb with
   | None -> Ono.Symbolic_ono_module.set_config_symb 5
-  |Some n -> Ono.Symbolic_ono_module.set_config_symb n);
-  
+  | Some n -> Ono.Symbolic_ono_module.set_config_symb n);
+
   Ono.Symbolic_driver.run ~source_file |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))

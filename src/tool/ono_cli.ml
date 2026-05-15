@@ -105,6 +105,10 @@ let steps =
   let doc = "Step pour limiter le nbr d'itération" in
   Arg.(value & opt (some int) None & info [ "steps" ] ~doc ~docv:"INT")
 
+let test =
+  let doc = "Commande pour exécuter les cram tests" in
+  Arg.(value & opt (some int) None & info [ "test" ] ~doc ~docv:"INT")
+
 let json_config =
   let doc = "File JSON for handmade configuration" in
   Arg.(
@@ -131,8 +135,6 @@ let option_graphic =
   in
   Arg.(required & pos 1 (some int) None (info [] ~doc ~docv:"INT"))
 
-let option_config_symb=
-  let doc =
-    "Un entier pour dire le numéro de la config choisi"
-  in
+let option_config_symb =
+  let doc = "Un entier pour dire le numéro de la config choisi" in
   Arg.(value & opt (some int) None & info [ "contrainte" ] ~doc ~docv:"INT")

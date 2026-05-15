@@ -15,8 +15,7 @@ let read_int () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   let n = Scanf.scanf " %d" (fun x -> x) in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int n)
 
-let xxx () : int = 
-  Scanf.scanf " %d" (fun x -> x)
+let xxx () : int = Scanf.scanf " %d" (fun x -> x)
 
 let polynomeA () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Rentrez une valeur pour A : ";
@@ -38,12 +37,11 @@ let polynomeD () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   flush stdout;
   read_int ()
 
-let config_symb= ref 0
+let config_symb = ref 0
 let set_config_symb n = config_symb := n
 
 let get_config_symb () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !config_symb)  
-
+  Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !config_symb)
 
 let setX () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Rentrez une valeur pour x : ";
@@ -55,7 +53,6 @@ let setY () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   flush stdout;
   read_int ()
 
-
 (* nous allons initialiser la largeur et la longueur en demandant à l'utilisateur puis nous allons set une variable partagé via l'interface 
 `symbolic_config` *)
 
@@ -64,10 +61,10 @@ let init_config_symbolic () : unit Owi.Symbolic_choice.t =
   flush stdout;
   let largeur = xxx () in
   width := Some largeur;
-  
+
   print_string "Rentrez une longueur pour la grille : ";
   flush stdout;
-  let longueur = xxx () in 
+  let longueur = xxx () in
   length := Some longueur;
 
   (* pour avoir le bon chemin pour y stocker le fichier *)
@@ -75,24 +72,20 @@ let init_config_symbolic () : unit Owi.Symbolic_choice.t =
 
   (* écrire dans un fichier txt width et length ou dans un json !! *)
   let json =
-    `Assoc
-    [
-      ("largeur", `Int largeur);
-      ("longueur", `Int longueur);
-      ]
-    in
-    
-    Yojson.Safe.to_file path json;
-  
+    `Assoc [ ("largeur", `Int largeur); ("longueur", `Int longueur) ]
+  in
+
+  Yojson.Safe.to_file path json;
+
   Kdo.Symbolic.Choice.return ()
 
 let get_width () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  match !width with 
+  match !width with
   | None -> Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int 0)
   | Some x -> Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int x)
 
 let get_length () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  match !length with 
+  match !length with
   | None -> Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int 0)
   | Some x -> Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int x)
 
@@ -111,9 +104,9 @@ let m =
       ("get_config_symb", Extern_func (unit ^->. i32, get_config_symb));
       ("setX", Extern_func (unit ^->. i32, setX));
       ("setY", Extern_func (unit ^->. i32, setY));
-      ("debug", Extern_func (unit ^->. unit, debug));
       (* pour la saisie utilisateur *)
-      ("init_config_symbolic", Extern_func (unit ^->. unit, init_config_symbolic));
+      ( "init_config_symbolic",
+        Extern_func (unit ^->. unit, init_config_symbolic) );
       ("get_width", Extern_func (unit ^->. i32, get_width));
       ("get_length", Extern_func (unit ^->. i32, get_length));
     ]

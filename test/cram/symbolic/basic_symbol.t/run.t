@@ -72,7 +72,7 @@ Check that branching works:
   ono: [INFO] Interpreting...
   ono: [ERROR] Trap: unreachable
   ono: [DEBUG] scope tokens: [symbol symbol_0 ; symbol symbol_1 ; symbol symbol_2]
-  ono: [ERROR] owi error: create temporary file config/bos-3e8970.tmp: No such file or directory
+  ono: [ERROR] owi error: create temporary file config/bos-78cd21.tmp: No such file or directory
   [123]
   $ ono symbolic branching_true.wat -vv
   ono: [INFO] Parsing file branching_true.wat...
@@ -125,5 +125,5 @@ Check that branching works:
   ono: [INFO] Interpreting...
   ono: [ERROR] Trap: unreachable
   ono: [DEBUG] scope tokens: [symbol symbol_0]
-  ono: [ERROR] owi error: create temporary file config/bos-d134d8.tmp: No such file or directory
+  ono: [ERROR] owi error: create temporary file config/bos-40d966.tmp: No such file or directory
   [123]
