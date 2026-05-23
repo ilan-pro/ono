@@ -12,7 +12,8 @@ let term =
   and+ option_config_symb = option_config_symb in
 
   (match option_config_symb with
-  | None -> Ono.Symbolic_ono_module.set_config_symb 5
+  (* fournir un chiffre négatif pour dire que nous n'avons rien donné *)
+  | None -> Ono.Symbolic_ono_module.set_config_symb (-1)
   | Some n -> Ono.Symbolic_ono_module.set_config_symb n);
 
   Ono.Symbolic_driver.run ~source_file |> function

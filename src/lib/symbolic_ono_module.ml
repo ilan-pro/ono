@@ -15,7 +15,7 @@ let read_int () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   let n = Scanf.scanf " %d" (fun x -> x) in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int n)
 
-let xxx () : int = Scanf.scanf " %d" (fun x -> x)
+let read () : int = Scanf.scanf " %d" (fun x -> x)
 
 let polynomeA () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Rentrez une valeur pour A : ";
@@ -41,7 +41,8 @@ let config_symb = ref 0
 let set_config_symb n = config_symb := n
 
 let get_config_symb () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !config_symb)
+  if !config_symb < 0 then failwith "Any constraint found" 
+  else Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !config_symb)
 
 let setX () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Rentrez une valeur pour x : ";
@@ -59,12 +60,12 @@ let setY () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
 let init_config_symbolic () : unit Owi.Symbolic_choice.t =
   print_string "Rentrez une largeur pour la grille : ";
   flush stdout;
-  let largeur = xxx () in
+  let largeur = read () in
   width := Some largeur;
 
   print_string "Rentrez une longueur pour la grille : ";
   flush stdout;
-  let longueur = xxx () in
+  let longueur = read () in
   length := Some longueur;
 
   (* pour avoir le bon chemin pour y stocker le fichier *)
