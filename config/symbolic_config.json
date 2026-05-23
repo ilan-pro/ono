@@ -5,18 +5,11 @@
     { "symbol": "symbol_1", "type": "i32", "value": "0" },
     { "symbol": "symbol_2", "type": "i32", "value": "0" },
     { "symbol": "symbol_3", "type": "i32", "value": "0" },
-    { "symbol": "symbol_4", "type": "i32", "value": "0" },
+    { "symbol": "symbol_4", "type": "i32", "value": "1" },
     { "symbol": "symbol_5", "type": "i32", "value": "1" },
-    { "symbol": "symbol_6", "type": "i32", "value": "1" },
-    { "symbol": "symbol_7", "type": "i32", "value": "1" },
-    { "symbol": "symbol_8", "type": "i32", "value": "0" },
-    { "symbol": "symbol_9", "type": "i32", "value": "1" },
-    { "symbol": "symbol_10", "type": "i32", "value": "0" },
-    { "symbol": "symbol_11", "type": "i32", "value": "0" },
-    { "symbol": "symbol_12", "type": "i32", "value": "0" },
-    { "symbol": "symbol_13", "type": "i32", "value": "0" },
-    { "symbol": "symbol_14", "type": "i32", "value": "0" },
-    { "symbol": "symbol_15", "type": "i32", "value": "0" }
+    { "symbol": "symbol_6", "type": "i32", "value": "0" },
+    { "symbol": "symbol_7", "type": "i32", "value": "0" },
+    { "symbol": "symbol_8", "type": "i32", "value": "1" }
   ],
   "breadcrumbs": [ 1 ]
 }
