@@ -1,6 +1,5 @@
-_build
 *.coverage
 _coverage
 _opam
 .DS_Store
-test-suite
+_build

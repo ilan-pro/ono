@@ -4,15 +4,15 @@ Test the output of the man page:
          ono-symbolic
   
   SYNOPSIS
-         ono symbolic [--contrainte=INT] [OPTION]… FILE
+         ono symbolic [--constraint=INT] [OPTION]… FILE
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
   
   OPTIONS
-         --contrainte=INT
-             Un entier pour dire le numéro de la config choisi
+         --constraint=INT
+             An integer to indicate the number of the chosen configuration.
   
   COMMON OPTIONS
          --color=WHEN (absent=auto)
