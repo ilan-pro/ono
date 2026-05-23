@@ -8,6 +8,7 @@ let print_i32 (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   Logs.app (fun m -> m "%a" Kdo.Concrete.I32.pp n);
   Ok ()
 
+(** Petit module de maths *)
 let print_i32_custom (i : Kdo.Concrete.I32.t) (j : Kdo.Concrete.I32.t) :
     (unit, _) Result.t =
   Logs.app (fun m -> m "%a %a" Kdo.Concrete.I32.pp i Kdo.Concrete.I32.pp j);
@@ -43,12 +44,15 @@ let debogue_valeur (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   Ok ()
 
 let print_separateur (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
+  (* on affiche réellement les vrais numéros d'itérations pas celle de la boucle (i commencant à 0 c'est moins) *)
+  let print_ite = (Kdo.Concrete.I32.to_int n) in
+  let print_ite_real = print_ite + 1 in
   Logs.app (fun m ->
-      m "-------------itération %a-----------------" Kdo.Concrete.I32.pp n);
+      m "-------------itération %a-----------------" Kdo.Concrete.I32.pp (Kdo.Concrete.I32.of_int print_ite_real));
   Ok ()
 
-let sleep (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
-  Unix.sleep (Kdo.Concrete.I32.to_int x);
+let sleep () : (unit, _) Result.t =
+  Unix.sleep (1);
   Ok ()
 
 let cell_print (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
@@ -303,7 +307,7 @@ let m =
       ("newline", Extern_func (unit ^->. unit, newline));
       ("clear_screen", Extern_func (unit ^->. unit, clear_screen));
       ("print_separateur", Extern_func (i32 ^->. unit, print_separateur));
-      ("sleep", Extern_func (i32 ^->. unit, sleep));
+      ("sleep", Extern_func (unit ^->. unit, sleep));
       (* l'affichage logique *)
       ("cell_print", Extern_func (i32 ^->. unit, cell_print));
       (* pour le debug *)

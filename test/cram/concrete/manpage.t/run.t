@@ -4,19 +4,19 @@ Test the output of the man page:
          ono-concrete
   
   SYNOPSIS
-         ono concrete [OPTION]… FILE INT
+         ono concrete [OPTION]… FILE
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
   
-         INT (required)
-             Booléan pour dire si oui ou non, nous voulons l'affichage
-             graphique
-  
   OPTIONS
          --config=CONFIG
              File JSON for handmade configuration
+  
+         --graphical
+             Booléan pour dire si oui ou non, nous voulons l'affichage
+             graphique
   
          --last=INT
              Affiche les n dernieres itérations.

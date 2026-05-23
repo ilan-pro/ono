@@ -28,7 +28,7 @@
     (func $begin_drawing (import "ono" "begin_drawing"))
     (func $cell_print_inter (import "ono" "cell_print_inter") (param i32) (param i32) (param i32))
     (func $clear_background (import "ono" "clear_background"))
-    (func $sleep (import "ono" "sleep") (param i32))
+    (func $sleep (import "ono" "sleep"))
     (func $print_iteration_graphic (import "ono" "print_iteration_graphic") (param i32) (param i32))
 
     (global $largeur (mut i32) (i32.const 4))
@@ -567,12 +567,8 @@
         (local $i i32)
         (local $borne i32)
         (local $iterlast i32)
-        (local $time i32)
         (local $option_graph i32)
         (local $frame i32)
-
-        i32.const 1
-        local.set $time
         
         
         (call $get_test)
@@ -619,18 +615,21 @@
         local.set $i
 
         (call $get_steps)
-        (local.set $borne)
-        (local.get $borne)
+        (local.tee $borne)
         (call $get_last)
         (i32.sub)
         (local.set $iterlast)
 
         (block $stop
             (loop $loop
-                (i32.eq (local.get $i)  (local.get $borne))
-                br_if $stop 
+                (i32.gt_s (local.get $borne) (i32.const 0))
+                (if 
+                    (then 
+                        (i32.eq (local.get $i)  (local.get $borne))
+                        br_if $stop 
+                    )
+                )
                 ;; ordre pour bien voir tous les affichages
-                local.get $i 
                 (i32.ge_s (local.get $i)  (local.get $iterlast))
 
                 (if 
@@ -654,7 +653,6 @@
                     )
                 )
                 
-                ;; (call $config_not_null)
                 (local.get $option_graph)
                 (if 
                     (then 
@@ -681,9 +679,12 @@
                         )
                     )
                     (else
-                        local.get $time
-                        call $sleep
-                                    
+                        (i32.ge_s (local.get $i)  (local.get $iterlast))
+                        ;; nous voulons attendre uniquement dans le cas des n dernières itérations ! sinon ça ne sert à rien...
+                        (if
+                            (then call $sleep)
+                        )
+                            
                         call $step
                         local.get $i
                         i32.const 1

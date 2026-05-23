@@ -1,5 +1,6 @@
 (module
   (func $print_i32 (import "ono" "print_i32") (param i32))
+
   (func $f (param $n i32) (result i32)
 
     (if
@@ -12,16 +13,21 @@
         (call $f
           (i32.sub
             (local.get $n)
-            (i32.const 2)))
+            (i32.const 2)
+          )
+        )
         (call $f
           (i32.sub
             (local.get $n)
-            (i32.const 1)))
+            (i32.const 1)
+          )
+        )
       )
     )
   )
   
-  (func $main
+  (func $main (local $tmp i32)
+
     i32.const 10
     call $f
     call $print_i32

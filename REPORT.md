@@ -1,22 +1,59 @@
-# Globalité
+# Comment exécuter le projet ?
 
-# Comment l’exécuter ?
+## Préliminaire
 
-commande générique : `dune exec -- ono concret options`
+Voici la commande à lancer afin de pouvoir lancer les tests lié à fibonacci : 
 
-## OPTION CONCRETE/SYMBOLIC
+`dune exec -- ono concrete test/cram/concrete/fibonacci.t/fibonnaci.wat`
 
-### Obligatoire 
+Voici la commande à lancer afin de pouvoir lancer les tets lié au fichier pour calculer le carré d'un nombre (ici 10) :
 
-- Chemin du fichier : il faut préciser un chemin vers un fichier `.wat` - [concrete/symbolic]
-- Un booléan indiquant si oui ou non nous voulons afficher la fenêtre graphique ou le mode textuelle - [concrete]
+`dune exec -- ono concrete test/cram/concrete/square.t/square.wat`
+
+Nous pouvons aussi tester les résultats de ces fonctions en exécutant la commande `dune runtest` afin de voir si cela correspond bien au résultat attendu.
+
+## Jeu de la vie en WASM 
+
+Pour exécuter cette partie, il y a différentes options. 
+
+### Les options : 
+- Le jeu de la vie nécessite un tableau sur lequel les cellules vivantes et mortes se trouvent. Pour cela, il faut des dimensions pour la largeur du plateau et pour la longueur du plateau. Nous avons choisi pour cela de demander à l'utilisateur les dimensions du plateau. Cela se passe directement via la ligne de commande et uniquement si aucune configuration préalable n'est fourni (car les dimensions sont déjà fourni dans le .json).
+
+    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat`
+
+    Cette commande permettra d'exécuter le jeu de la vie dans une configuration totalement aléatoire avec les dimensions souhaitées.
+
+- Étant donné que nous pouvons faire un nombre infini d'étapes, nous avons spécifier une option nommé `steps` qui permet tout simplement de limiter le nombre d'itération. Attention, si le jeu de la vie se trouve dans une phase stable après n itération et que nous en demandons strictement moins de n, alors nous ne verrons pas la grille se "stabiliser".
+
+    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat --steps 10`
+
+- Le problème vient aussi dans le sens inverse, étant donné que nous pouvons avoir de très grande instance du jeu de la vie, voir le résultat final (jusqu'à un moment stable comme dans le cas des glider par exemple) est difficile (car long). Nous avons donc introduit une nouvelle options permettant de spécifier les n dernières itérations que nous voulons afficher du jeu de la vie. Attention, ceci n'est valable que quand nous avons l'option `--steps` car sans cette dernière, cela n'aurait aucun sens étant donné que nous avons un nombre d'itérations infini et donc qu'il n'y a pas de fin à proprement parlé.
+
+    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat --steps 10 --last 3`
+
+- De plus, afin d'avoir des cram tests cohérent et étant donné la gestion aléatoire des configurations du jeu de la vie par notre moteur, nous devons introduire une option afin de contrôler la graîne qui génère les nombres aléatoires afin de toujours avoir une configuration similaire et donc de vérifier les crams tests.
+
+    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat --seed 42` 
+
+- Nous pouvons aussi préciser une configuration par défaut si nous connaissons certains schéma intéressant du jeu de la vie comme des gliders ou autre structure récurrente.
+Nos fichiers de configurations se trouve dans le répertoire de `config`, ainsi une commande valide serait : 
+    
+    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat --config config/glider.json` 
+
+- Une des principales fonctionnalitée était de réaliser un jeu de la vie en graphique, nous avons pour cela du utiliser une option supplémentaire afin de spécifier si nous voulons lancer la fenêtre graphique ou non. Bien-sûr, les options précédentes sont toujours compatibles avec la version graphique.
+
+    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat --graphical`
+
+- La dernière partie du projet portant sur l'exécution symbolique, il fallait une option permettant d'exécutant le résultat des configurations généré par le moteur d'exécution symbolique. Nous devons seulement spécifier le fichier json spécifier et un parseur prendra la main (le parseur est bien-sûr différent de celui utilisé pour les configurations classique)
+
+    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat `
+
+
+
+
 
 ### Optionnelle 
 
-- `--config chemin_vers_config_json` : Permet de spécifier une configuration `json` afin de démarrer notre moteur sur une configuration prédéfinie - [concrete]
-- `--seed int` : Permet de générer une configuration aléatoire (en spécifiant la même `seed` à chaque exécution, nous aurons les mêmes configurations afin de pouvoir utiliser les cram tests correctement) - [concrete]
-- `--last int` : Permet de préciser combien d’itération, à partir de la fin, nous voulons afficher dans le jeu de vie - [concrete]
-- `steps int` : À l'inverse de `last`. Le `steps` permet de ne générer que les `n` premières configurations - [concrete]
 - `--symbolic_config chemin_vers_json` : Permet de démarrer le moteur de notre jeu sur une configuration générer par un moteur d'exxécution symbolique - [concrete]
 - `contrainte int` : Permet de préciser le numéro de la contrainte que nous souhaitons exécuter - [symbolic]
 

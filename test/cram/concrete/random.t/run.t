@@ -1,14 +1,11 @@
   $ ono concrete random.wat --seed 42
-  Usage: ono concrete [--help] [OPTION]… FILE INT
-  ono: required argument INT is missing
-  [124]
+  4
+  OK!
 
   $ ono concrete random.wat --seed 55
-  Usage: ono concrete [--help] [OPTION]… FILE INT
-  ono: required argument INT is missing
-  [124]
+  3
+  OK!
 
   $ ono concrete random.wat --seed 10
-  Usage: ono concrete [--help] [OPTION]… FILE INT
-  ono: required argument INT is missing
-  [124]
+  2
+  OK!
