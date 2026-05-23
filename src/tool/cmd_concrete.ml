@@ -16,14 +16,16 @@ let term =
   and+ test = test
   and+ steps = steps
   and+ last = last
-  and+ option_graphic = option_graphic in
+  and+ graphical_option = graphical_option in
 
   (match last with
-  | Some n -> Ono.Concrete_ono_module.set_last_arg n
-  | None -> (
-      match steps with
-      | Some n -> Ono.Concrete_ono_module.set_last_arg n
-      | None -> Ono.Concrete_ono_module.set_last_arg 8));
+  | Some n -> 
+    (* dansle cas ou last est présent mais pas steps alors il y a un gros problème et nous devons
+    lever une exception ! *)
+    (match steps with
+      | None -> failwith "last présent mais steps est absent ce qui n'est pas cohérent pour le moteur..."
+      | Some _ -> Ono.Concrete_ono_module.set_last_arg n);
+  | None -> ());
 
   (match test with
   | Some n -> Ono.Concrete_ono_module.set_test n
@@ -33,11 +35,12 @@ let term =
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
   (match steps with
   | Some n -> Ono.Concrete_ono_module.set_steps_arg n
-  | None -> Ono.Concrete_ono_module.set_steps_arg 8);
+  (* 0 nous permettra de détecter qu'il faut un nombre infini d'étapes même si la ref est déjà à 0, par sécurité...*)
+  | None -> Ono.Concrete_ono_module.set_steps_arg 0);
 
   (* pour l'option graphique *)
   (* comme l'argument est obligatoire (required), le cmdLiner l'a déjà simplifier en int *)
-  if option_graphic > 0 then Ono.Concrete_ono_module.set_option_graphic 1
+  if graphical_option then Ono.Concrete_ono_module.set_option_graphic 1
   else Ono.Concrete_ono_module.set_option_graphic 0;
 
   let symbolic =
