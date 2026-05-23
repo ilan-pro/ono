@@ -138,4 +138,4 @@ let graphical_option =
 
 let option_config_symb =
   let doc = "An integer to indicate the number of the chosen configuration." in
-  Arg.(value & opt (some int) None & info [ "contrainte" ] ~doc ~docv:"INT")
+  Arg.(value & opt (some int) None & info [ "constraint" ] ~doc ~docv:"INT")

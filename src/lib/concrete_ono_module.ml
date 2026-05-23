@@ -57,7 +57,7 @@ let sleep () : (unit, _) Result.t =
 
 let cell_print (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   if x <> Kdo.Concrete.I32.of_int 0 then Buffer.add_string buffer "🦊 "
-  else Buffer.add_string buffer "x  ";
+  else Buffer.add_string buffer ".  ";
   Ok ()
 
 let steps_arg = ref 0

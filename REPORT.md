@@ -44,20 +44,14 @@ Nos fichiers de configurations se trouve dans le répertoire de `config`, ainsi 
 
     `dune exec -- ono concrete test/cram/concrete/game.t/game.wat --graphical`
 
-- La dernière partie du projet portant sur l'exécution symbolique, il fallait une option permettant d'exécutant le résultat des configurations généré par le moteur d'exécution symbolique. Nous devons seulement spécifier le fichier json spécifier et un parseur prendra la main (le parseur est bien-sûr différent de celui utilisé pour les configurations classique)
+- La dernière partie du projet portant sur l'exécution symbolique, il fallait une option permettant d'exécutant le résultat des configurations généré par le moteur d'exécution symbolique. Nous devons seulement spécifier le fichier json et un parseur prendra la main (le parseur est bien-sûr différent de celui utilisé pour les configurations classique). Pour cette étape, nous utilisons 2 fichiers json, 1 ou nous insérons les dimensions de la grille que l'utilisateur à rentré lors de sa saisie `symbolic_dimension.json` et un second qui représente le résultat du solveur qui est `symbolic_config.json`. Les fichiers de configuration json pour la partie symbolique sont dans le même répertoir que pour les configurations classiques. Une commande pour exécuter cette partie serait donc : 
 
-    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat `
+    `dune exec -- ono concrete test/cram/concrete/game.t/game.wat --symbolic_config config/symbolic_config.json`
 
+- Concernant cette même partie mais via la commande symbolic maintenant, nous avons une options permettant de préciser le numéro de contrainte que nous voulons. Les numéros et leur descriptions sont reférencé plus bas.
+    `dune exec -- ono symbolic test/cram/symbolic/config.t/config.wat --constraint {0..13}`
 
-
-
-
-### Optionnelle 
-
-- `--symbolic_config chemin_vers_json` : Permet de démarrer le moteur de notre jeu sur une configuration générer par un moteur d'exxécution symbolique - [concrete]
-- `contrainte int` : Permet de préciser le numéro de la contrainte que nous souhaitons exécuter - [symbolic]
-
-### Les contraintes 
+### Les numéros de contrainte
 
 | Numéro | Description                                                                                            |
 | -----  | -------------------------------------------------------------------------------------------------------|

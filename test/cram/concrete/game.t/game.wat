@@ -615,10 +615,19 @@
         local.set $i
 
         (call $get_steps)
-        (local.tee $borne)
-        (call $get_last)
-        (i32.sub)
-        (local.set $iterlast)
+        (local.set $borne)
+        
+        ;; si last est à 0 alors nous ne l'avons pas spécifié en arg de la cli et donc nous ne faisons aucune soustraction
+        ;; sinon cela pourrait fausser les calculs car borne-0 = borne et plus bas nous aurions un problème 
+        ;; d'affichage quand on fait la condition pour savoir si oui ou non nous afficher/sleep quand nous devons afficher
+        ;; uniquement les n dernières itérations
+        (i32.gt_u (call $get_last) (i32.const 0))
+        (if 
+            (then 
+                (i32.sub (local.get $borne) (call $get_last))
+                (local.set $iterlast)
+            )
+        )
 
         (block $stop
             (loop $loop

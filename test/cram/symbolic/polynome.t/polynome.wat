@@ -5,7 +5,6 @@
     (func $polynomeB (import "ono" "polynomeB") (result i32))
     (func $polynomeC (import "ono" "polynomeC") (result i32))
     (func $polynomeD (import "ono" "polynomeD") (result i32))
-    (func $debug (import "ono" "debug"))
 
     (func $calculer_poly 
         (param $x i32) (param $a i32) (param $b i32) (param $c i32) (param $d i32)

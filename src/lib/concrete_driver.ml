@@ -19,7 +19,7 @@ let run ~source_file ?json ?symbolic () =
   puisse créer alive *)
   let json_symbolic =
     (* le chemin vers le fichier en Fpath *)
-    let path = Fpath.v "config/symbolic_config.json" in
+    let path = Fpath.v "config/symbolic_dimension.json" in
     (* on créé le fichier json en Yojson *)
     let content = Bos.OS.File.read path |> Result.to_option in
     Option.map Yojson.Safe.from_string content

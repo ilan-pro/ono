@@ -33,6 +33,7 @@ let term =
 
   (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
+  
   (match steps with
   | Some n -> Ono.Concrete_ono_module.set_steps_arg n
   (* 0 nous permettra de détecter qu'il faut un nombre infini d'étapes même si la ref est déjà à 0, par sécurité...*)

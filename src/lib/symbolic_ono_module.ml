@@ -68,7 +68,7 @@ let init_config_symbolic () : unit Owi.Symbolic_choice.t =
   length := Some longueur;
 
   (* pour avoir le bon chemin pour y stocker le fichier *)
-  let path = "config/symbolic_config.json" in
+  let path = "config/symbolic_dimension.json" in
 
   (* écrire dans un fichier txt width et length ou dans un json !! *)
   let json =
