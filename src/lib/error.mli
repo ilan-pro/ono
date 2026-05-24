@@ -1,4 +1,4 @@
-(* Error infrastructure. *)
+(** Erreurs remontées par Ono. *)
 
 type t =
   [ `Msg of string

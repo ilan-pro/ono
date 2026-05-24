@@ -14,14 +14,23 @@ Test the output of the man page:
          --config=CONFIG
              File JSON for handmade configuration
   
+         --graphical
+             Boolean to indicate whether or not we want the graphical display..
+  
          --last=INT
-             Affiche les n dernieres itérations.
+             Print n last iterations.
   
          --seed=INT
              Seed for random number generator.
   
          --steps=INT
-             Step pour limiter le nbr d'itération TODO
+             Step to limit the number of iterations
+  
+         --symbolic_config=SYMBOLIC_CONFIG
+             File JSON for symbolic configuration
+  
+         --test=INT
+             Command to execute cram tests.
   
   COMMON OPTIONS
          --color=WHEN (absent=auto)

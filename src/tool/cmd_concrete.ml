@@ -12,18 +12,46 @@ let term =
   and+ source_file = source_file
   and+ seed = seed
   and+ json_config = json_config
-  and+ steps = steps 
-  and+ last = last in
+  and+ symbolic_configuration = symbolic_configuration
+  and+ test = test
+  and+ steps = steps
+  and+ last = last
+  and+ graphical_option = graphical_option in
 
-    (match last with
-  | Some n -> Ono.Concrete_ono_module.set_last_arg n
-  | None -> Ono.Concrete_ono_module.set_last_arg 8);
+  (match last with
+  | Some n -> 
+    (* dansle cas ou last est présent mais pas steps alors il y a un gros problème et nous devons
+    lever une exception ! *)
+    (match steps with
+      | None -> failwith "last présent mais steps est absent ce qui n'est pas cohérent pour le moteur..."
+      | Some _ -> Ono.Concrete_ono_module.set_last_arg n);
+  | None -> ());
+
+  (match test with
+  | Some n -> Ono.Concrete_ono_module.set_test n
+  | None -> Ono.Concrete_ono_module.set_test 0);
 
   (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
+  
   (match steps with
   | Some n -> Ono.Concrete_ono_module.set_steps_arg n
-  | None -> Ono.Concrete_ono_module.set_steps_arg 8);
+  (* 0 nous permettra de détecter qu'il faut un nombre infini d'étapes même si la ref est déjà à 0, par sécurité...*)
+  | None -> Ono.Concrete_ono_module.set_steps_arg 0);
+
+  (* pour l'option graphique *)
+  (* comme l'argument est obligatoire (required), le cmdLiner l'a déjà simplifier en int *)
+  if graphical_option then Ono.Concrete_ono_module.set_option_graphic 1
+  else Ono.Concrete_ono_module.set_option_graphic 0;
+
+  let symbolic =
+    match symbolic_configuration with
+    | None -> None
+    | Some path ->
+        (* même logique que plus bas *)
+        let content = Bos.OS.File.read path |> Result.to_option in
+        Option.map Yojson.Safe.from_string content
+  in
 
   (* le fichier json *)
   let json =
@@ -37,9 +65,7 @@ let term =
         Option.map Yojson.Safe.from_string content
   in
 
-  (* c ici que le moteur d'owi execute les .wat *)
-  (* todo : on ajouter () pour ... *)
-  Ono.Concrete_driver.run ~source_file ?json () |> function
+  Ono.Concrete_driver.run ~source_file ?json ?symbolic () |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))
 

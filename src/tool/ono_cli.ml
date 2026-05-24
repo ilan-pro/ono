@@ -102,8 +102,12 @@ let seed =
 (* Définition de l'option seed pour la CLI *)
 
 let steps =
-  let doc = "Step pour limiter le nbr d'itération TODO" in
+  let doc = "Step to limit the number of iterations" in
   Arg.(value & opt (some int) None & info [ "steps" ] ~doc ~docv:"INT")
+
+let test =
+  let doc = "Command to execute cram tests." in
+  Arg.(value & opt (some int) None & info [ "test" ] ~doc ~docv:"INT")
 
 let json_config =
   let doc = "File JSON for handmade configuration" in
@@ -112,11 +116,26 @@ let json_config =
     & opt (some existing_file_json) None
     & info [ "config" ] ~doc ~docv:"CONFIG")
 
-
-let last =
-  let doc = "Affiche les n dernieres itérations." in
+let symbolic_configuration =
+  let doc = "File JSON for symbolic configuration" in
   Arg.(
     value
-    & opt (some int) None 
-    & info [ "last" ] ~doc ~docv:"INT"
-  )
+    & opt (some existing_file_json) None
+    & info [ "symbolic_config" ] ~doc ~docv:"SYMBOLIC_CONFIG")
+
+let last =
+  let doc = "Print n last iterations." in
+  Arg.(value & opt (some int) None & info [ "last" ] ~doc ~docv:"INT")
+
+(* remplacement du some int par un flag qui est bien plus logique et qui nous entrave pas dans l'exécution de 
+fonction comme fibonacci qui ne nécessite aucunement de paramètre parasyte telle que option_graphic. 
+Le flag permet simplement d'indiquer si oui non (booléan) il y a bien eu l'option d'ajouter dans la cli *)
+let graphical_option =
+  let doc =
+    "Boolean to indicate whether or not we want the graphical display.."
+  in
+  Arg.(value & flag & info [ "graphical" ] ~doc)
+
+let option_config_symb =
+  let doc = "An integer to indicate the number of the chosen configuration." in
+  Arg.(value & opt (some int) None & info [ "constraint" ] ~doc ~docv:"INT")
