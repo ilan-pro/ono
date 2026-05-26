@@ -651,6 +651,10 @@
                                         (i32.add (local.get $i) (i32.const 1))
                                         (call $print_grid_inter)
                                     )
+                                    (else 
+                                        call $close_window
+                                        br $stop
+                                    )
                                 )
                             )  
                             (else 

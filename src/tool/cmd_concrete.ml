@@ -19,12 +19,15 @@ let term =
   and+ graphical_option = graphical_option in
 
   (match last with
-  | Some n -> 
-    (* dansle cas ou last est présent mais pas steps alors il y a un gros problème et nous devons
+  | Some n -> (
+      (* dansle cas ou last est présent mais pas steps alors il y a un gros problème et nous devons
     lever une exception ! *)
-    (match steps with
-      | None -> failwith "last présent mais steps est absent ce qui n'est pas cohérent pour le moteur..."
-      | Some _ -> Ono.Concrete_ono_module.set_last_arg n);
+      match steps with
+      | None ->
+          failwith
+            "last présent mais steps est absent ce qui n'est pas cohérent pour \
+             le moteur..."
+      | Some _ -> Ono.Concrete_ono_module.set_last_arg n)
   | None -> ());
 
   (match test with
@@ -33,7 +36,7 @@ let term =
 
   (* pour générer la seed *)
   (match seed with Some n -> Random.init n | None -> Random.self_init ());
-  
+
   (match steps with
   | Some n -> Ono.Concrete_ono_module.set_steps_arg n
   (* 0 nous permettra de détecter qu'il faut un nombre infini d'étapes même si la ref est déjà à 0, par sécurité...*)

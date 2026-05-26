@@ -41,7 +41,7 @@ let config_symb = ref 0
 let set_config_symb n = config_symb := n
 
 let get_config_symb () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  if !config_symb < 0 then failwith "Any constraint found" 
+  if !config_symb < 0 then failwith "Any constraint found"
   else Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !config_symb)
 
 let setX () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
@@ -52,7 +52,7 @@ let setX () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
 let getN () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Rentrez une valeur pour N : ";
   flush stdout;
-  read_int ()  
+  read_int ()
 
 let setY () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Rentrez une valeur pour y : ";

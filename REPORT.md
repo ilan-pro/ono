@@ -48,14 +48,15 @@ Nos fichiers de configurations se trouve dans le répertoire de `config`, ainsi 
 
     `dune exec -- ono concrete test/cram/concrete/game.t/game.wat --symbolic_config config/symbolic_config.json`
 
-- Concernant cette même partie mais via la commande symbolic maintenant, nous avons une options permettant de préciser le numéro de contrainte que nous voulons. Les numéros et leur descriptions sont reférencé plus bas.
+- Concernant cette même partie mais via la commande symbolic maintenant, nous avons une options permettant de préciser le numéro de contrainte que nous voulons. Les numéros et leur descriptions sont reférencé plus bas. 
+Quand nous exécutons cette commande, la sortie est redirigé dans le fichier de configuration json qui se trouve dans `config/symbolic_config.json`. C'est ici que nous pouvons vérifier si la disposition des symboles correspond bien à une solution.
+
     `dune exec -- ono symbolic test/cram/symbolic/config.t/config.wat --constraint {0..13}`
 
 ### Les numéros de contrainte
 
 | Numéro | Description                                                                                            |
 | -----  | -------------------------------------------------------------------------------------------------------|
-| `0`    | Permet de n'avoir aucune cellule vivante au prochain tour (par défaut)                                 |
 | `1`    | Permet de demander à l'utilisateur à la case (x,y) qu'une cellule vivante soit présente                |
 | `2`    | Permet de demander à l'utilisateur à la case (x,y) qu'une cellule morte soit présente                  |
 | `3`    | Au tour suivant, il y a au moins une cellule vivante sur la grille                                     |
