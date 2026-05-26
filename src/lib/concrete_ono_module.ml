@@ -45,14 +45,15 @@ let debogue_valeur (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
 
 let print_separateur (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   (* on affiche réellement les vrais numéros d'itérations pas celle de la boucle (i commencant à 0 c'est moins) *)
-  let print_ite = (Kdo.Concrete.I32.to_int n) in
+  let print_ite = Kdo.Concrete.I32.to_int n in
   let print_ite_real = print_ite + 1 in
   Logs.app (fun m ->
-      m "-------------itération %a-----------------" Kdo.Concrete.I32.pp (Kdo.Concrete.I32.of_int print_ite_real));
+      m "-------------itération %a-----------------" Kdo.Concrete.I32.pp
+        (Kdo.Concrete.I32.of_int print_ite_real));
   Ok ()
 
 let sleep () : (unit, _) Result.t =
-  Unix.sleep (1);
+  Unix.sleep 1;
   Ok ()
 
 let cell_print (x : Kdo.Concrete.I32.t) : (unit, _) Result.t =
@@ -287,9 +288,12 @@ let get_option_graphic () : (Kdo.Concrete.I32.t, _) Result.t =
 let print_iteration_graphic (iter : Kdo.Concrete.I32.t)
     (max_iter : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   let text =
-    Printf.sprintf "%d/%d"
-      (Kdo.Concrete.I32.to_int iter)
-      (Kdo.Concrete.I32.to_int max_iter)
+    if Kdo.Concrete.I32.to_int max_iter == 0 then
+      Printf.sprintf "%d" (Kdo.Concrete.I32.to_int iter)
+    else
+      Printf.sprintf "%d/%d"
+        (Kdo.Concrete.I32.to_int iter)
+        (Kdo.Concrete.I32.to_int max_iter)
   in
   Ok (draw_text text 0 0 10 Color.white)
 

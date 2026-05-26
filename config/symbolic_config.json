@@ -4,10 +4,10 @@
     { "symbol": "symbol_0", "type": "i32", "value": "0" },
     { "symbol": "symbol_1", "type": "i32", "value": "0" },
     { "symbol": "symbol_2", "type": "i32", "value": "0" },
-    { "symbol": "symbol_3", "type": "i32", "value": "1" },
+    { "symbol": "symbol_3", "type": "i32", "value": "0" },
     { "symbol": "symbol_4", "type": "i32", "value": "0" },
-    { "symbol": "symbol_5", "type": "i32", "value": "1" },
-    { "symbol": "symbol_6", "type": "i32", "value": "1" },
+    { "symbol": "symbol_5", "type": "i32", "value": "0" },
+    { "symbol": "symbol_6", "type": "i32", "value": "0" },
     { "symbol": "symbol_7", "type": "i32", "value": "0" },
     { "symbol": "symbol_8", "type": "i32", "value": "0" }
   ],
