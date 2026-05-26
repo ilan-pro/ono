@@ -1,3 +1,5 @@
+(** Parsing des fichiers JSON de configuration du jeu de la vie. *)
+
 type config = { width : int; length : int; alive : (int * int) list }
 (** Type représentant la configuration du jeu de la vie, nous devons faire
     correspondre les fichiers pris en argument de la cli à ce type si nous
