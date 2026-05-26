@@ -14,7 +14,8 @@ let term =
   (match option_config_symb with
   (* fournir un chiffre négatif pour dire que nous n'avons rien donné *)
   | None -> Ono.Symbolic_ono_module.set_config_symb (-1)
-  | Some n -> Ono.Symbolic_ono_module.set_config_symb n);
+  | Some n when List.mem n [1;2;3;4;5;8;9;10;11;12;13]  -> Ono.Symbolic_ono_module.set_config_symb n
+  | _ -> failwith "constraint invalide");
 
   Ono.Symbolic_driver.run ~source_file |> function
   | Ok () -> Ok ()
