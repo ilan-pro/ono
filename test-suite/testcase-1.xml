@@ -5,7 +5,16 @@
     0
   </input>
   <input>
+    1
+  </input>
+  <input>
     0
+  </input>
+  <input>
+    0
+  </input>
+  <input>
+    1
   </input>
   <input>
     0
@@ -17,15 +26,6 @@
     0
   </input>
   <input>
-    0
-  </input>
-  <input>
-    0
-  </input>
-  <input>
-    0
-  </input>
-  <input>
-    0
+    1
   </input>
 </testcase>
