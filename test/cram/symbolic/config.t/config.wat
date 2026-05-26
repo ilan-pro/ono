@@ -5,6 +5,7 @@
     (func $get_width (import "ono" "get_width") (result i32))
     (func $get_length (import "ono" "get_length") (result i32))
     (func $setX (import "ono" "setX") (result i32))
+    (func $getN (import "ono" "getN") (result i32))
     (func $setY (import "ono" "setY") (result i32))
     (func $get_config_symb (import "ono" "get_config_symb") (result i32))
     
@@ -373,13 +374,16 @@
 
     (func $contrainte_8
         (local $nb_alive i32)
+        (local $n i32)
 
+        call $getN
+        local.set $n
         
         call $step
         call $count_alive
         (local.set $nb_alive)
         
-        (i32.eq (local.get $nb_alive) (i32.const 4))
+        (i32.eq (local.get $nb_alive) (local.get $n))
         (if 
             (then unreachable)
         )
@@ -884,130 +888,155 @@
 
 
 
+    (type $contrainte_n (func))
+
+    (table 14 funcref)
+
+    (elem (i32.const 1)
+    
+        $contrainte_1
+        $contrainte_2
+        $contrainte_3
+        $contrainte_4
+        $contrainte_5
+    )
+
+    (elem (i32.const 8)
+        $contrainte_8
+        $contrainte_9
+        $contrainte_10
+        $contrainte_11
+        $contrainte_12
+        $contrainte_13
+    )
+
+    (func $choix_config (param $choix i32)
+        local.get $choix 
+        call_indirect (type $contrainte_n)
+    )
 
 
 
-
-      (func $choix_config (param $choix i32)
+    ;;   (func $choix_config (param $choix i32)
 
     
-        local.get $choix
-        i32.const 1
-        i32.eq 
+    ;;     local.get $choix
+    ;;     i32.const 1
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_1
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_1
 
-            )
-        )
+    ;;         )
+    ;;     )
 
-        local.get $choix
-        i32.const 2
-        i32.eq 
+    ;;     local.get $choix
+    ;;     i32.const 2
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_2
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_2
 
-            )
-        )
+    ;;         )
+    ;;     )
 
-        local.get $choix
-        i32.const 3
-        i32.eq 
+    ;;     local.get $choix
+    ;;     i32.const 3
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_3
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_3
 
-            )
-        )
+    ;;         )
+    ;;     )
 
-        local.get $choix
-        i32.const 4
-        i32.eq 
+    ;;     local.get $choix
+    ;;     i32.const 4
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_4
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_4
 
-            )
-        )
-        local.get $choix
-        i32.const 5
-        i32.eq 
+    ;;         )
+    ;;     )
+    ;;     local.get $choix
+    ;;     i32.const 5
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_5
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_5
 
-            )
-        )
-        local.get $choix
-        i32.const 8
-        i32.eq 
+    ;;         )
+    ;;     )
+    ;;     local.get $choix
+    ;;     i32.const 8
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_8
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_8
 
-            )
-        )
-        local.get $choix
-        i32.const 9
-        i32.eq 
+    ;;         )
+    ;;     )
+    ;;     local.get $choix
+    ;;     i32.const 9
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_9
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_9
 
-            )
-        )
-        local.get $choix
-        i32.const 10
-        i32.eq 
+    ;;         )
+    ;;     )
+    ;;     local.get $choix
+    ;;     i32.const 10
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_10
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_10
 
-            )
-        )
-        local.get $choix
-        i32.const 11
-        i32.eq 
+    ;;         )
+    ;;     )
+    ;;     local.get $choix
+    ;;     i32.const 11
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_11
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_11
 
-            )
-        )
-        local.get $choix
-        i32.const 12
-        i32.eq 
+    ;;         )
+    ;;     )
+    ;;     local.get $choix
+    ;;     i32.const 12
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_12
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_12
 
-            )
-        )
-        local.get $choix
-        i32.const 13
-        i32.eq 
+    ;;         )
+    ;;     )
+    ;;     local.get $choix
+    ;;     i32.const 13
+    ;;     i32.eq 
 
-        (if 
-            (then 
-                call $contrainte_13
+    ;;     (if 
+    ;;         (then 
+    ;;             call $contrainte_13
 
-            )
-        )
+    ;;         )
+    ;;     )
 
 
 
-    )
+    ;; )
 
 
     (func $main

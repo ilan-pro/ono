@@ -49,6 +49,11 @@ let setX () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   flush stdout;
   read_int ()
 
+let getN () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
+  print_string "Rentrez une valeur pour N : ";
+  flush stdout;
+  read_int ()  
+
 let setY () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Rentrez une valeur pour y : ";
   flush stdout;
@@ -104,6 +109,7 @@ let m =
       ("polynomeD", Extern_func (unit ^->. i32, polynomeD));
       ("get_config_symb", Extern_func (unit ^->. i32, get_config_symb));
       ("setX", Extern_func (unit ^->. i32, setX));
+      ("getN", Extern_func (unit ^->. i32, getN));
       ("setY", Extern_func (unit ^->. i32, setY));
       (* pour la saisie utilisateur *)
       ( "init_config_symbolic",
